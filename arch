@@ -1,0 +1,7 @@
+widget:
+	id
+	source
+	count
+	size
+	position
+	refresh_interval

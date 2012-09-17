@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<link rel="stylesheet" href="css/bootstrap.css">
+	<link rel="stylesheet" href="css/domus.css">
+	<title>Domus</title>
+</head>
+
+<body>
+
+    <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <a class="brand" href="#">Domus</a>
+          <div class="nav-collapse collapse">
+            <form class="navbar-form" action="http://google.com/search">
+              <input class="span5" type="text" name="q" placeholder="Search...">
+              <button type="submit" class="btn btn-primary">Search</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+	<div id="widget-container" class="row-fluid">
+		<div id="widget-cintainer-inner" class="span12">
+
+			<div class="widget">
+				<ul class="nav nav-tabs widget-header"><li class="active"><a>News Item #1</a></li></ul>
+				<div class="widget-body">
+					<ul>
+						<li>Item #1</li>
+						<li>Item #2</li>
+						<li>Item #3</li>
+					</ul>
+				</div>
+			</div>
+
+		</div>
+	</div>
+
+	<script src="http://code.jquery.com/jquery-latest.js"></script>
+	<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.8.23/jquery-ui.min.js"></script>
+	<script src="js/bootstrap.js"></script>
+	<script>
+		$(function () {
+			$('.widget').draggable({ handle: 'ul', cursor: 'move'});
+		});
+	</script>
+
+</body>
+</html>

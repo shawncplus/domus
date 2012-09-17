@@ -1,0 +1,31 @@
+.navbar-static-top .container, .navbar-fixed-top .container, .navbar-fixed-bottom .container {
+	width: 600px;
+}
+
+body {
+	padding: 40px;
+}
+
+#widget-container {
+	position: relative;
+	margin: 60px auto;
+}
+
+#widget-container .widget {
+	width: 300px;
+	height: 200px;
+}
+
+#widget-container .widget-header {
+	margin-bottom: 0;
+}
+
+#widget-container .widget-body {
+	border-style: solid;
+	border-width: 0 1px 1px 1px;
+	border-color: #ddd;
+}
+
+div.widget.ui-draggable > ul.widget-header > li.active > a:hover {
+	cursor: move;
+}
