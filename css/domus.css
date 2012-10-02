@@ -2,18 +2,26 @@
 	width: 600px;
 }
 
-body {
-	padding: 40px;
+.footer {
+	position: fixed;
+	bottom: 0;
+	width: 100%;
+	right: 0;
+	left: 0;
+	margin: none;
+	min-height: 40px;
 }
 
 #widget-container {
-	position: relative;
-	margin: 60px auto;
+	position: fixed;
+	width: 100%;
+	margin: 60px 0 0;
+	z-index: 999;
 }
 
 #widget-container .widget {
 	width: 300px;
-	height: 200px;
+	height: auto;
 }
 
 #widget-container .widget-header {
@@ -24,8 +32,29 @@ body {
 	border-style: solid;
 	border-width: 0 1px 1px 1px;
 	border-color: #ddd;
+	background-color: #fff;
 }
 
 div.widget.ui-draggable > ul.widget-header > li.active > a:hover {
 	cursor: move;
+}
+
+.nav-tabs > .active > a, .nav-tabs > .active > a:hover {
+	color: #fff;
+	border: none;
+	background-color: transparent;
+}
+
+.nav-tabs > li.active:hover {
+	background-color: #444;
+}
+
+.nav-tabs > li.active {
+	border: 1px solid #333;
+	border-bottom:none;
+	border-radius: 4px 4px 0 0;
+	-webkit-border-radius: 4px 4px 0 0;
+	-moz-border-radius: 4px 4px 0 0;
+	-ms-border-radius: 4px 4px 0 0;
+	background-color: #555;
 }
