@@ -1,15 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
 	<head>
-		<link rel="stylesheet" href="css/bootstrap.css">
-		<link rel="stylesheet" href="css/domus.css">
+		<link rel="stylesheet" href="/static/css/bootstrap.css">
+		<link rel="stylesheet" href="/static/css/domus.css">
 		<link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/hot-sneaks/jquery-ui.css">
 		<title>Domus</title>
 	</head>
 
 	<body>
 
-		{% include 'navbar.html' %}
+		<div class="navbar navbar-inverse navbar-fixed-top">
+			<div class="navbar-inner">
+				<div class="container">
+					<a class="brand" href="#">Domus</a>
+					<div class="nav-collapse collapse">
+						<form class="navbar-form" action="http://google.com/search">
+							<input class="span5" type="text" name="q" placeholder="Search...">
+							<button type="submit" class="btn btn-primary">Search</button>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
 
 		<div id="widget-container" class="container">
 {% for widget in widgets %}
@@ -21,11 +33,13 @@
 {% endfor %}
 		</div>
 
-		{% include 'footer.html' %}
+		<div id="footer" class="navbar navbar-inverse navbar-fixed-bottom">
+			<div class="navbar-inner"></div>
+		</div>
 
 		<script src="//code.jquery.com/jquery-latest.js"></script>
 		<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.8.23/jquery-ui.min.js"></script>
-		<script src="js/bootstrap.js"></script>
-		<script src="js/domus.js"></script>
+		<script src="/static/js/bootstrap.js"></script>
+		<script src="/static/js/domus.js"></script>
 	</body>
 </html>
