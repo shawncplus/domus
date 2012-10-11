@@ -16,8 +16,9 @@ var Domus = {
 	 */
 	getWidgetItems: function (widget, callback)
 	{
-		var widget_dir = Domus._cache_dir + widget.id.substr(0, 2);
-		var widget_file = widget_dir + '/' + widget.id;
+		widget._id = widget._id.toString();
+		var widget_dir = Domus._cache_dir + widget._id.substr(0, 2);
+		var widget_file = widget_dir + '/' + widget._id;
 
 		var cached = fs.existsSync(widget_file);
 		var stale  = cached ?

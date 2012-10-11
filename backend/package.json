@@ -1,11 +1,12 @@
 {
   "name": "domus-be",
   "description": "Open source iGoogle replacement - API",
-  "version": "0.0.1-3",
+  "version": "0.0.1-4",
   "private": true,
   "dependencies": {
     "express": "3.x",
-    "feedparser": "0.10.x"
+    "feedparser": "0.10.x",
+    "mongojs": "0.4.x"
   },
   "subdomain": "shawncplus.domus-be",
   "scripts": {

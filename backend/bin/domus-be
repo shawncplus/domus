@@ -3,27 +3,34 @@
 var express = require('express'),
 	app = express(),
 	http = require('http'),
+	mongojs = require('mongojs'),
+
 	Domus = require('../lib/core').Domus;
 
 
-app.configure(function () { app.set('listen_on', 8080); });
-app.configure('production', function () { app.set('listen_on', 80); });
+var collections = ["widgets"]
+app.configure(function () {
+	app.set('listen_on', 8080);
+	app.set('dbconnection', 'localhost/test');
+});
+app.configure('production', function () {
+	app.set('listen_on', 80);
+	app.set('dbconnection', process.env.DBCON);
+});
+
+var db = mongojs.connect(app.get('dbconnection'), collections);
 
 app.get('/', function(req, res) {
 	res.send(404, 'Invalid method');
 });
 
-// Placeholder for a real database...
-var widgets = {
-	'4eff084084c7643597c7a8afcd15f726': {
-		title: 'Shawn Biddle\'s Devblog',
-	   id: '4eff084084c7643597c7a8afcd15f726',
-	   source: 'http://shawnbiddle.com/devblog/rss',
-	   count: 2,
-	   position: { left: 0, top: 0 },
-	   refresh_interval: 15
-	}
-};
+app.get('/user/:user/widgets/', function (req, res) {
+	// We don't have users yet, so sue me!
+	db.widgets.find(function (err, widgets) {
+		if (err || !widgets) return res.send(400, err);
+		res.json(widgets);
+	});
+});
 
 app.get('/widget/:widget_id', function (req, res) {
 	var id = req.params.widget_id;
@@ -31,12 +38,12 @@ app.get('/widget/:widget_id', function (req, res) {
 		return res.send(400, 'Bad widget id');
 	}
 
-	if (!(id in widgets)) {
-		return res.send(400, 'No such widget... dummy');
-	}
+	db.widgets.findOne({_id: mongojs.ObjectId(id)}, function (err, widget) {
+		if (err || !widget) return res.send(400, 'No such widget... dummy');
 
-	Domus.getWidgetItems(widgets[id], function (items) {
-		res.json({ 'items' : items });
+		Domus.getWidgetItems(widget, function (items) {
+			res.json({ 'items' : items });
+		});
 	});
 });
 

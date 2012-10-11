@@ -25,7 +25,7 @@
 
 		<div id="widget-container" class="container">
 {% for widget in widgets %}
-			<div class="widget" data-id="{{ widget.id }}" style="position:relative;left:{{ widget.left }};top:{{ widget.top }}">
+			<div class="widget" data-id="{{ widget._id }}" style="position:relative;left:{{ widget.left }};top:{{ widget.top }}">
 				<ul class="nav nav-tabs widget-header"><li class="active"><a>{{ widget.title }}</a></li></ul>
 				<div class="widget-body">
 				</div>

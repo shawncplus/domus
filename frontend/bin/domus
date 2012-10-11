@@ -39,15 +39,8 @@ app.param(function(name, fn){
 });
 
 app.get('/', function(req, res) {
-	res.render('home.html.twig', {
-		widgets: [
-			{
-				id: crypto.createHash('md5').update('testshawn').digest('hex'),
-				title: 'Shawn Biddle\'s Devblog',
-				left: 0,
-				top: 0
-			}
-		]
+	rest.get(Domus.config.api_server.host + '/user/shawncplus/widgets/').on('complete', function (data) {
+		res.render('home.html.twig', { widgets: data });
 	});
 });
 
