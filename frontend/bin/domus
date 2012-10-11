@@ -1,10 +1,12 @@
+#!/usr/bin/env node
+
 var Twig = require("twig"),
     express = require('express'),
     app = express(),
     crypto = require('crypto');
 
-app.set('views', __dirname + '/views');
-app.use('/static', express.static(__dirname + '/web'));
+app.set('views', __dirname + '/../views');
+app.use('/static', express.static(__dirname + '/../web'));
 app.param(function(name, fn){
 	if (fn instanceof RegExp) {
 		return function(req, res, next, val){
@@ -52,3 +54,4 @@ app.get('/widget/:widget_id', function (req, res) {
 });
 
 app.listen(9999);
+// vim: set syn=javascript :

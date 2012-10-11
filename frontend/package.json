@@ -1,10 +1,17 @@
 {
-	"name": "domus",
-	"description": "Open source iGoogle replacement",
-	"version": "0.0.1",
-	"private": true,
-	"dependencies": {
-		"express": "3.x",
-		"twig": "0.4.x"
-	}
+  "name": "domus",
+  "description": "Open source iGoogle replacement",
+  "version": "0.0.1-1",
+  "private": true,
+  "dependencies": {
+    "express": "3.x",
+    "twig": "0.4.x"
+  },
+  "subdomain": "shawncplus.domus",
+  "scripts": {
+    "start": "node ./bin/domus"
+  },
+  "engines": {
+    "node": "0.8.x"
+  }
 }
