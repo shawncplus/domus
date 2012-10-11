@@ -1,0 +1,44 @@
+#!/usr/bin/env node
+
+var express = require('express'),
+	app = express(),
+	http = require('http'),
+	Domus = require('../lib/core').Domus;
+
+
+app.configure(function () { app.set('listen_on', 8080); });
+app.configure('production', function () { app.set('listen_on', 80); });
+
+app.get('/', function(req, res) {
+	res.send(404, 'Invalid method');
+});
+
+// Placeholder for a real database...
+var widgets = {
+	'4eff084084c7643597c7a8afcd15f726': {
+		title: 'Shawn Biddle\'s Devblog',
+	   id: '4eff084084c7643597c7a8afcd15f726',
+	   source: 'http://shawnbiddle.com/devblog/rss',
+	   count: 2,
+	   position: { left: 0, top: 0 },
+	   refresh_interval: 15
+	}
+};
+
+app.get('/widget/:widget_id', function (req, res) {
+	var id = req.params.widget_id;
+	if (!/^[a-f0-9]+$/.test(id)) {
+		return res.send(400, 'Bad widget id');
+	}
+
+	if (!(id in widgets)) {
+		return res.send(400, 'No such widget... dummy');
+	}
+
+	Domus.getWidgetItems(widgets[id], function (items) {
+		res.json({ 'items' : items });
+	});
+});
+
+app.listen(app.get('listen_on'));
+// vim: set syn=javascript :

@@ -3,7 +3,24 @@
 var Twig = require("twig"),
     express = require('express'),
     app = express(),
-    crypto = require('crypto');
+    crypto = require('crypto'),
+    rest = require('restler');
+
+var Domus = {
+	config : {
+		api_server: {
+			host: 'http://localhost:8080',
+		}
+	}
+};
+
+app.configure(function () {
+	app.set('listen_on', 9999);
+});
+app.configure('production', function () {
+	app.set('listen_on', 80);
+	Domus.config.api_server.host = 'http://shawncplus.domus-be.jit.su';
+});
 
 app.set('views', __dirname + '/../views');
 app.use('/static', express.static(__dirname + '/../web'));
@@ -26,7 +43,7 @@ app.get('/', function(req, res) {
 		widgets: [
 			{
 				id: crypto.createHash('md5').update('testshawn').digest('hex'),
-				title: 'Test Widget',
+				title: 'Shawn Biddle\'s Devblog',
 				left: 0,
 				top: 0
 			}
@@ -37,21 +54,10 @@ app.get('/', function(req, res) {
 app.param('widget_id', /^[a-f0-9]+$/);
 
 app.get('/widget/:widget_id', function (req, res) {
-	res.json({
-		'items': [
-			{
-				'title': 'Hello, World!',
-				'link': 'http://www.google.com/',
-				'preview': 'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore...',
-			},
-			{
-				'title': 'Goodbye, World!',
-				'link': 'http://www.example.com/',
-				'preview': 'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore...',
-			}
-		]
+	rest.get(Domus.config.api_server.host + '/widget/' + req.params.widget_id).on('complete', function (data) {
+		res.json(data);
 	});
 });
 
-app.listen(9999);
+app.listen(app.get('listen_on'));
 // vim: set syn=javascript :
