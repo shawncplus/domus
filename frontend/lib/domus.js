@@ -46,19 +46,33 @@ var Domus = {
 			post: [ passport.requireAuth, function (req, res)
 			{
 				var params = req.body;
+				var callback = function (response)
+				{
+					if (response && response.errors) {
+						req.session.messages ?
+						req.session.messages.errors = response.errors
+						 :
+						req.session.messages = {
+							errors: response.errors
+						};
+					}
+					res.redirect('/');
+				};
+
 				switch(params.action) {
 				case 'add':
 					delete req.body.action;
-					Domus.addWidget(req.body, req.user.email, function (response) {
-						if (response && response.errors) {
-							req.session.messages = {
-								errors: response.errors,
-								addform: req.body
-							};
-						}
-						res.redirect('/');
-					});
+					Domus.addWidget(req.body, req.user.email, callback);
+					req.session.messages.addform = req.body;
 					break;
+				case 'edit':
+					delete req.body.action;
+					Domus.updateWidget(req.body, callback);
+					req.session.messages.addform = req.body;
+					break;
+				case 'delete':
+					delete req.body.action;
+					Domus.deleteWidget(req.body.widget_id, req.user.email, callback);
 				default:
 					res.json({ error: "WTF?", request: params });
 					break;
@@ -88,7 +102,7 @@ var Domus = {
 					}
 
 					req.logIn(user, function (err) {
-						return res.redirect(req.headers.origin);
+						return res.redirect('/');
 					});
 				})(req, res, next);
 			}

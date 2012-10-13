@@ -61,10 +61,22 @@ $(function () {
 					'</div>' +
 					'<div id="widget-body-' + widget_id + i +'" class="accordion-body collapse">' +
 						'<div class="accordion-inner">' + item.preview + '</div>' +
+						'<div class="accordion-inner-footer">' +
+							'<a class="btn btn-small btn-block btn-primary" target="_blank" href="' + item.link + '">See full article</a>' +
+						'</div>' +
 					'</div>' +
 				'<div>'
 				));
 				collapsed = true;
+			});
+
+			$(widget).find('.widget-header a[data-action=edit]').click(function ()
+			{
+			});
+
+
+			$(widget).find('.widget-header a[data-action=delete]').click(function ()
+			{
 			});
 		});
 	});
@@ -75,15 +87,15 @@ $(function () {
 		$(this).parent().addClass('accordion-toggle-active');
 	});
 
-	$('#addThing').live('shown', function () {
+	$('#editThing').live('shown', function () {
 		$('#input-title').focus();
 	})
 
+	// Setup the fields so the user can see the actual value of a range input
 	var updateRangePreview = function ()
 	{
 		$(this).prev('span.range-preview').html(this.valueAsNumber);
 	};
-
 	$('input[type=range]').each(updateRangePreview).live('change', updateRangePreview);
 
 	$('.alert').alert();

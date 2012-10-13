@@ -56,7 +56,7 @@ div.widget.ui-draggable > ul.widget-header > li.active > h4:hover {
 	line-height: 90%;
 }
 
-div.widget-body .nav-tabs > li {
+div.widget-body .nav-tabs > li, .nav-tabs > li {
 	margin-bottom: 0;
 }
 
@@ -81,7 +81,11 @@ div.widget-body .nav-tabs > li {
 	text-align: center;
 }
 
-div.accordion-group div.accordion-heading.accordion-toggle-active {
+div.accordion-heading:hover {
+	background-color: #eee;
+}
+
+div.accordion-group div.accordion-heading.accordion-toggle-active, div.accordion-group div.accordion-heading.accordion-toggle-active:hover {
 	background-color: #08c;
 }
 
