@@ -8,6 +8,26 @@
 	</head>
 
 	<body>
+{% if errors %}
+		<div id="flash">
+			<div class="alert alert-error fade in">
+				<button type="button" class="close" data-dismiss="alert">&times;</button>
+				<p>The following errors happened
+{% if addform %}
+				while adding a new thing.</p>
+				<a href="#addThing" role="button" class="btn btn-warning" data-toggle="modal">Fix it</a>
+{% else %}
+				</p>
+{% endif %}
+
+				<ul class="unstyled">
+{% for e in errors %}
+					<li>{{ e }}</li>
+{% endfor %}
+				</ul>
+			</div>
+		</div>
+{% endif %}
 
 		<div class="navbar navbar-inverse navbar-fixed-top">
 			<div class="navbar-inner">
@@ -18,7 +38,6 @@
 							<input class="search-query input-medium span5" type="text" name="q" placeholder="Search...">
 							<button type="submit" class="btn btn-primary">Search</button>
 						</form>
-
 					</div>
 				</div>
 			</div>
@@ -26,9 +45,21 @@
 
 		<div id="widget-container" class="container">
 {% for widget in widgets %}
-			<div class="widget" data-id="{{ widget._id }}" style="position:relative;left:{{ widget.position.left }}px;top:{{ widget.position.top }}px">
-				<ul class="nav nav-tabs widget-header"><li class="active"><a>{{ widget.title }}</a></li></ul>
+			<div class="widget" data-id="{{ widget._id }}" id="widget-{{ widget._id }}" style="position:absolute;left:{{ widget.position.left }}px;top:{{ widget.position.top }}px">
+				<ul class="nav nav-tabs widget-header">
+					<li class="active"><h4>{{ widget.title }}</h4></li>
+					<li class="dropdown">
+					<a class="dropdown-toggle" data-toggle="dropdown" data-parent="{{ widget._id }}"><b class="caret"></b></a>
+						<ul class="dropdown-menu">
+							<li><a data-action="edit"><i class="icon-pencil"></i> Edit</a></li>
+							<li><a data-action="delete"><i class="icon-fire"></i> Delete</a></li>
+						</ul>
+					</li>
+				</ul>
 				<div class="widget-body">
+					<div class="progress progress-striped active">
+						<div class="bar" style="width: 100%;"></div>
+					</div>
 				</div>
 			</div>
 {% endfor %}
@@ -36,7 +67,66 @@
 
 		<div id="footer" class="navbar navbar-inverse navbar-fixed-bottom">
 			<div class="navbar-inner">
-				<a href="/logout" class="btn btn-info pull-right">Logout</a>
+				<a href="#addThing" role="button" class="btn btn-success pull-left" data-toggle="modal">Add Thing</a>
+				<a href="/logout" class="btn btn-primary pull-right">Logout</a>
+			</div>
+		</div>
+
+		<div class="modal hide fade" id="addThing" tabindex="-1" role="dialog" aria-labelledby="addThingLabel" aria-hidden="true">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+				<h3 id="addThingLabel">Add new thing</h3>
+			</div>
+
+			<form class="form-horizontal" method="post">
+				<input type="hidden" name="action" value="add">
+				<div class="modal-body">
+					<div class="control-group">
+						<label class="control-label" for="input-title">Title</label>
+						<div class="controls">
+							<input id="input-title" name="title" type="text" {% if addform %}value="{{addform.title}}"{% endif %}>
+						</div>
+					</div>
+
+					<div class="control-group">
+						<label class="control-label" for="input-source">Source</label>
+						<div class="controls">
+							<input id="input-source" name="source" type="text" placeholder="http://example.com/example.rss" {% if addform %}value="{{addform.source}}"{% endif %}>
+						</div>
+					</div>
+
+					<div class="control-group">
+						<label class="control-label" for="input-count"># of stories</label>
+						<div class="controls">
+							<div class="input-prepend">
+								<span class="add-on range-preview"></span>
+								<input id="input-count" name="count" type="range" min="1" max="5" value="{%if addform %}{{addform.count}}{%else%}3{%endif%}">
+							</div>
+						</div>
+					</div>
+
+					<div class="control-group">
+						<label class="control-label" for="input-refresh-interval">Refresh Interval</label>
+						<div class="controls">
+							<div class="input-prepend input-append">
+								<span class="add-on range-preview"></span>
+								<input id="input-refresh-interval" name="refresh_interval" type="range" value="{%if addform %}{{addform.refresh_interval}}{%else%}15{%endif%}" step="5" min="5" max="60">
+								<span class="add-on">minutes</span>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+					<button type="submit" class="btn btn-primary">Save changes</button>
+				</div>
+			</form>
+		</div>
+
+		<div class="modal hide fade" id="loadingmodal" tabindex="-1" role="dialog" aria-labelledby="loadingLabel" aria-hidden="true">
+			<div class="modal-header">
+				<h3 id="loadingLabel"></h3>
+				<p></p>
 			</div>
 		</div>
 

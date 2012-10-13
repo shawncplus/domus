@@ -33,20 +33,31 @@
 }
 
 #widget-container .widget-body {
-	border-style: solid;
-	border-width: 0 1px 1px 1px;
-	border-color: #ddd;
+	border: none;
 	background-color: #fff;
+	padding: 0;
 }
 
-div.widget.ui-draggable > ul.widget-header > li.active > a:hover {
+div.widget > ul.nav-tabs, div.widget .nav-tabs > li > a {
+	border: none;
+	border-radius: 0;
+}
+
+div.widget.ui-draggable > ul.widget-header > li.active > h4:hover {
 	cursor: move;
 }
 
-.nav-tabs > .active > a, .nav-tabs > .active > a:hover {
+.nav-tabs > .active > h4, .nav-tabs > .active > h4:hover {
 	color: #fff;
 	border: none;
 	background-color: transparent;
+	max-width: 300px;
+	padding: 0 5px;
+	line-height: 90%;
+}
+
+div.widget-body .nav-tabs > li {
+	margin-bottom: 0;
 }
 
 .nav-tabs > li.active:hover {
@@ -54,13 +65,9 @@ div.widget.ui-draggable > ul.widget-header > li.active > a:hover {
 }
 
 .nav-tabs > li.active {
-	border: 1px solid #333;
-	border-bottom:none;
-	border-radius: 4px 4px 0 0;
-	-webkit-border-radius: 4px 4px 0 0;
-	-moz-border-radius: 4px 4px 0 0;
-	-ms-border-radius: 4px 4px 0 0;
+	border: none;
 	background-color: #555;
+	font-variant: small-caps;
 }
 
 .domus-container {
@@ -68,4 +75,54 @@ div.widget.ui-draggable > ul.widget-header > li.active > a:hover {
 	margin-top: 60px;
 }
 
+#flash {
+	top: 40px;
+	position: relative;
+	text-align: center;
+}
 
+div.accordion-group div.accordion-heading.accordion-toggle-active {
+	background-color: #08c;
+}
+
+div.accordion-group div.accordion-heading.accordion-toggle-active a {
+	color: #fff;
+	font-weight: bold;
+	text-transform: uppercase;
+	max-width: 300px;
+}
+
+div.widget-body div.accordion-group {
+	border-radius: 0;
+	border: none;
+	-webkit-border-radius: 0;
+	-moz-border-radius: 0;
+}
+
+div.widget-body div.accordion-heading {
+	border-width: 1px 1px 0 1px;
+	border-style: solid;
+	border-color: #e5e5e5;
+}
+
+div.widget-body div.accordion-body {
+	border-width: 0 1px 1px 1px;
+	border-style: solid;
+	border-color: #e5e5e5;
+}
+
+div.widget-body div.accordion-heading.accordion-toggle-active {
+	border: none;
+}
+
+a.accordion-toggle {
+	text-decoration: none;
+}
+
+a.dropdown-toggle, ul.dropdown-menu > li > a {
+	cursor: pointer;
+}
+
+ul.dropdown-menu i[class^="icon-"], ul.dropdown-menu i[class*=" icon-"] {
+	margin-top: -1px;
+}
