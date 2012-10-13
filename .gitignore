@@ -2,3 +2,5 @@ frontend/cache/*
 frontend/node_modules/*
 backend/cache/*
 backend/node_modules/*
+tools/*
+*.sw*

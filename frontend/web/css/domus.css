@@ -2,6 +2,10 @@
 	width: 600px;
 }
 
+.navbar-fixed-top .navbar-inner {
+	padding: 0 20px;
+}
+
 .footer {
 	position: fixed;
 	bottom: 0;
@@ -20,7 +24,7 @@
 }
 
 #widget-container .widget {
-	width: 300px;
+	width: 315px;
 	height: auto;
 }
 
@@ -58,3 +62,10 @@ div.widget.ui-draggable > ul.widget-header > li.active > a:hover {
 	-ms-border-radius: 4px 4px 0 0;
 	background-color: #555;
 }
+
+.domus-container {
+	text-align: center;
+	margin-top: 60px;
+}
+
+

@@ -6,7 +6,9 @@
   "dependencies": {
     "express": "3.x",
     "twig": "0.4.x",
-    "restler": "2.x"
+    "restler": "2.x",
+	"passport": "0.1.x",
+	"passport-local": "0.1.x"
   },
   "subdomain": "shawncplus.domus",
   "scripts": {
@@ -14,5 +16,6 @@
   },
   "engines": {
     "node": "0.8.x"
-  }
+  },
+  "domains": [ "domus.io" ]
 }

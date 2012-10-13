@@ -1,56 +1,26 @@
 #!/usr/bin/env node
 
 var Twig = require("twig"),
-    express = require('express'),
-    app = express(),
-    crypto = require('crypto'),
-    rest = require('restler');
-
-var Domus = {
-	config : {
-		api_server: {
-			host: 'http://localhost:8080',
-		}
-	}
-};
+	express = require('express'),
+	app = express(),
+	Domus = require('../lib/domus').Domus;
 
 app.configure(function () {
-	app.set('listen_on', 9999);
+	app.set('listen_on', 1234);
+	app.set('auth_salt', 'changemeyounonce');
 });
 app.configure('production', function () {
 	app.set('listen_on', 80);
+	app.set('auth_salt', process.env.AUTHSALT);
 	Domus.config.api_server.host = 'http://shawncplus.domus-be.jit.su';
 });
 
 app.set('views', __dirname + '/../views');
 app.use('/static', express.static(__dirname + '/../web'));
-app.param(function(name, fn){
-	if (fn instanceof RegExp) {
-		return function(req, res, next, val){
-			var captures;
-			if (captures = fn.exec(String(val))) {
-				req.params[name] = captures;
-				next();
-			} else {
-				next('route');
-			}
-		}
-	}
-});
 
-app.get('/', function(req, res) {
-	rest.get(Domus.config.api_server.host + '/user/shawncplus/widgets/').on('complete', function (data) {
-		res.render('home.html.twig', { widgets: data });
-	});
-});
-
-app.param('widget_id', /^[a-f0-9]+$/);
-
-app.get('/widget/:widget_id', function (req, res) {
-	rest.get(Domus.config.api_server.host + '/widget/' + req.params.widget_id).on('complete', function (data) {
-		res.json(data);
-	});
-});
+Domus.setup(express, app);
 
 app.listen(app.get('listen_on'));
 // vim: set syn=javascript :
+
+

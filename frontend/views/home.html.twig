@@ -14,10 +14,11 @@
 				<div class="container">
 					<a class="brand" href="#">Domus</a>
 					<div class="nav-collapse collapse">
-						<form class="navbar-form" action="http://google.com/search">
-							<input class="span5" type="text" name="q" placeholder="Search...">
+						<form class="navbar-form form-search" action="http://google.com/search">
+							<input class="search-query input-medium span5" type="text" name="q" placeholder="Search...">
 							<button type="submit" class="btn btn-primary">Search</button>
 						</form>
+
 					</div>
 				</div>
 			</div>
@@ -25,7 +26,7 @@
 
 		<div id="widget-container" class="container">
 {% for widget in widgets %}
-			<div class="widget" data-id="{{ widget._id }}" style="position:relative;left:{{ widget.left }};top:{{ widget.top }}">
+			<div class="widget" data-id="{{ widget._id }}" style="position:relative;left:{{ widget.position.left }}px;top:{{ widget.position.top }}px">
 				<ul class="nav nav-tabs widget-header"><li class="active"><a>{{ widget.title }}</a></li></ul>
 				<div class="widget-body">
 				</div>
@@ -34,12 +35,14 @@
 		</div>
 
 		<div id="footer" class="navbar navbar-inverse navbar-fixed-bottom">
-			<div class="navbar-inner"></div>
+			<div class="navbar-inner">
+				<a href="/logout" class="btn btn-info pull-right">Logout</a>
+			</div>
 		</div>
 
 		<script src="//code.jquery.com/jquery-latest.js"></script>
 		<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.8.23/jquery-ui.min.js"></script>
 		<script src="/static/js/bootstrap.js"></script>
-		<script src="/static/js/domus.js"></script>
+		<script src="/static/js/widget.js"></script>
 	</body>
 </html>

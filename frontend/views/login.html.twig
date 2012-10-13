@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<link rel="stylesheet" href="/static/css/bootstrap.css">
+		<link rel="stylesheet" href="/static/css/domus.css">
+		<title>Domus</title>
+	</head>
+
+	<body>
+
+		<div class="navbar navbar-inverse navbar-fixed-top">
+			<div class="navbar-inner">
+			</div>
+		</div>
+
+		<div class="container domus-container">
+			<div class="hero-unit">
+				<h1>Domus</h1>
+				<p>If you don't know your password it's because you shouldn't be here in the first place</p>
+{% if error %}
+				<div class="alert alert-error alert-block">
+					<h4>That wasn't quite right...</h4>
+					<p>{{ error }}</p>
+				</div>
+{% endif %}
+				<form class="form-inline" method="post">
+					<input id="email" name="email" type="text" class="input-small" placeholder="Email"{% if username %} value="{{username}}"{% endif %}>
+					<input id="password" name="password" type="password" class="input-small" placeholder="Password">
+					<button type="submit" class="btn btn-primary">Sign in</button>
+				</form>
+			</div>
+		</div>
+
+		<div id="footer" class="navbar navbar-inverse navbar-fixed-bottom">
+			<div class="navbar-inner"></div>
+		</div>
+
+		<script src="//code.jquery.com/jquery-latest.js"></script>
+		<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.8.23/jquery-ui.min.js"></script>
+		<script src="/static/js/bootstrap.js"></script>
+		<script>
+			$(function () {
+				$('#email').focus();
+			});
+		</script>
+	</body>
+</html>
+
