@@ -131,6 +131,11 @@ $(function () {
 			{
 				event.preventDefault();
 				$('#add_button').trigger('click', $('#add_button')[0]);
+			},
+			'?' : function (event, char, charcode)
+			{
+				event.preventDefault();
+				$('#keybindHelpModal').modal('toggle');
 			}
 		};
 

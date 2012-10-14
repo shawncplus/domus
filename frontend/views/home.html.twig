@@ -34,13 +34,13 @@
 				<a class="brand" href="#">Domus</a>
 				<ul class="nav">
 					<li><a href="https://github.com/shawncplus/domus" target="_blank">Code</a></li>
+					<li class="navbar-text faded"><strong>?</strong> - show help</li>
 					<li class="divider-vertical"></li>
 				</ul>
-					
-					<form class="navbar-form pull-right" action="http://google.com/search">
-						<input class="input-medium span5" id="searchbox" type="text" name="q" placeholder="Search...">
-						<button type="submit" class="btn btn-primary">Search</button>
-					</form>
+				<form class="navbar-form pull-right" action="http://google.com/search">
+					<input class="input-medium span5" id="searchbox" type="text" name="q" placeholder="Search...">
+					<button type="submit" class="btn btn-primary">Search</button>
+				</form>
 				</ul>
 			</div>
 		</div>
@@ -132,6 +132,20 @@
 			<div class="modal-header">
 				<h3 id="loadingLabel"></h3>
 				<p></p>
+			</div>
+		</div>
+
+		<div class="modal hide fade" id="keybindHelpModal" tabindex="-1" role="dialog" aria-labelledby="keybindHelpLabel" aria-hidden="true">
+			<div class="modal-header">
+				<h3 id="keybindHelpLabel">Keybindings</h3>
+				<dl class="horizontal">
+					<dt>a</dt>
+						<dd>Show the Add Widget dialog</dd>
+					<dt>/</dt>
+						<dd>Focus the search box</dd>
+					<dt>?</dt>
+						<dd>You already know what this does, that's how you got here!</dd>
+				</dl>
 			</div>
 		</div>
 

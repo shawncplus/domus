@@ -80,8 +80,12 @@ div.widget-body .nav-tabs > li, .nav-tabs > li {
 	text-align: center;
 }
 
+div.accordion-heading {
+	background-color: #ddd;
+}
+
 div.accordion-heading:hover {
-	background-color: #eee;
+	background-color: #aaa;
 }
 
 div.accordion-group div.accordion-heading.accordion-toggle-active, div.accordion-group div.accordion-heading.accordion-toggle-active:hover {
@@ -134,4 +138,8 @@ div.widget-body .alert {
 	border-radius: 0;
 	-moz-border-radius: 0;
 	-webkit-border-radius: 0;
+}
+
+.faded {
+	color: #555;
 }
