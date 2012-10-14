@@ -20,7 +20,7 @@ $(function () {
 	};
 
 	$('.widget').draggable({
-		handle: 'ul.nav',
+		handle: 'ul.nav li.active',
 		cursor: 'move',
 		opacity: 0.35,
 		stack: '.widget',
@@ -67,6 +67,45 @@ $(function () {
 		$(this).parent().addClass('accordion-toggle-active');
 	});
 
+	// Change the form action for the edit window based on the button that launched it
+	$('a[data-action]').live('click', function ()
+	{
+		var action = $(this).data('action');
+		switch (action) {
+		case 'edit':
+			var widget_id = $(this).data('target');
+			$.getJSON('/widget/' + widget_id + '.json', function (response)
+			{
+				$('#editThing form input[name=action]').val(action);
+				for (var field in response) {
+					var isnt_int_field = !~$.inArray(field, ['refresh_interval', 'count']);
+					if (isnt_int_field) {
+						$('#input-' + field).val(response[field]);
+					} else {
+						$('#input-' + field).attr('value', response[field]);
+						$('#input-' + field).trigger('change');
+					}
+				
+				}
+				$('#editThing').modal('show');
+			});
+			break;
+		case 'add':
+			$('#editThing form input[name=action]').val(action);
+			$(['title', 'source', 'refresh_interval', 'count', '_id']).each(function (i, field)
+			{
+				$('#input-' + field).val($('#input-' + field).data('default') || null);
+				$('#input-' + field).trigger('change');
+			});
+			$('#editThing').modal('show');
+			break;
+		case 'delete':
+			$('#delete_id').val($(this).data('target'));
+			$('#delete_form').submit();
+			break;
+		}
+	});
+
 	$('#editThing').live('shown', function () {
 		$('#input-title').focus();
 	})
@@ -79,4 +118,30 @@ $(function () {
 	$('input[type=range]').each(updateRangePreview).live('change', updateRangePreview);
 
 	$('.alert').alert();
+
+	$(document).keypress(function (e)
+	{
+		var events = {
+			'/' : function (event, char, charcode)
+			{
+				event.preventDefault();
+				$('#searchbox').focus();
+			},
+			'a' : function (event, char, charcode)
+			{
+				event.preventDefault();
+				$('#add_button').trigger('click', $('#add_button')[0]);
+			}
+		};
+
+		var char = String.fromCharCode(e.which);
+
+		if (char in events) {
+			if (e.delegateTarget && e.delegateTarget.activeElement && e.delegateTarget.activeElement.type === "text") {
+				return;
+			}
+
+			events[char](e, char, e.which);
+		}
+	});
 });

@@ -31,15 +31,17 @@
 
 		<div class="navbar navbar-inverse navbar-fixed-top">
 			<div class="navbar-inner">
-				<div class="container">
-					<a class="brand" href="#">Domus</a>
-					<div class="nav">
-						<form class="navbar-form form-search" action="http://google.com/search">
-							<input class="search-query input-medium span5" type="text" name="q" placeholder="Search...">
-							<button type="submit" class="btn btn-primary">Search</button>
-						</form>
-					</div>
-				</div>
+				<a class="brand" href="#">Domus</a>
+				<ul class="nav">
+					<li><a href="https://github.com/shawncplus/domus" target="_blank">Code</a></li>
+					<li class="divider-vertical"></li>
+				</ul>
+					
+					<form class="navbar-form pull-right" action="http://google.com/search">
+						<input class="input-medium span5" id="searchbox" type="text" name="q" placeholder="Search...">
+						<button type="submit" class="btn btn-primary">Search</button>
+					</form>
+				</ul>
 			</div>
 		</div>
 
@@ -51,8 +53,10 @@
 					<li class="dropdown">
 					<a class="dropdown-toggle" data-toggle="dropdown" data-parent="{{ widget._id }}"><b class="caret"></b></a>
 						<ul class="dropdown-menu">
-							<li><a data-action="edit"><i class="icon-pencil"></i> Edit</a></li>
-							<li><a data-action="delete"><i class="icon-fire"></i> Delete</a></li>
+							<li><a data-action="edit" data-target="{{ widget._id }}"><i class="icon-pencil"></i> Edit</a></li>
+							<li>
+								<a data-action="delete" data-target="{{ widget._id }}"><i class="icon-fire"></i> Delete</a>
+							</li>
 						</ul>
 					</li>
 				</ul>
@@ -67,7 +71,7 @@
 
 		<div id="footer" class="navbar navbar-inverse navbar-fixed-bottom">
 			<div class="navbar-inner">
-				<a href="#editThing" role="button" class="btn btn-success pull-left" data-toggle="modal">Add Thing</a>
+				<a id="add_button" href="#" role="button" class="btn btn-success pull-left" data-action="add">Add Thing</a>
 				<a href="/logout" class="btn btn-primary pull-right">Logout</a>
 			</div>
 		</div>
@@ -80,6 +84,7 @@
 
 			<form class="form-horizontal" method="post">
 				<input type="hidden" name="action" value="add">
+				<input type="hidden" id="input-_id" name="_id" value="">
 				<div class="modal-body">
 					<div class="control-group">
 						<label class="control-label" for="input-title">Title</label>
@@ -100,17 +105,17 @@
 						<div class="controls">
 							<div class="input-prepend">
 								<span class="add-on range-preview"></span>
-								<input id="input-count" name="count" type="range" min="1" max="5" value="{%if addform %}{{addform.count}}{%else%}3{%endif%}">
+								<input id="input-count" name="count" type="range" min="1" max="5" data-default="3" value="{%if addform %}{{addform.count}}{%else%}3{%endif%}">
 							</div>
 						</div>
 					</div>
 
 					<div class="control-group">
-						<label class="control-label" for="input-refresh-interval">Refresh Interval</label>
+						<label class="control-label" for="input-refresh_interval">Refresh Interval</label>
 						<div class="controls">
 							<div class="input-prepend input-append">
 								<span class="add-on range-preview"></span>
-								<input id="input-refresh-interval" name="refresh_interval" type="range" value="{%if addform %}{{addform.refresh_interval}}{%else%}15{%endif%}" step="5" min="5" max="60">
+								<input id="input-refresh_interval" name="refresh_interval" type="range" data-default="15" value="{%if addform %}{{addform.refresh_interval}}{%else%}15{%endif%}" step="5" min="5" max="60">
 								<span class="add-on">minutes</span>
 							</div>
 						</div>
@@ -129,6 +134,11 @@
 				<p></p>
 			</div>
 		</div>
+
+		<form method="post" id="delete_form" style="display: none;">
+			<input type="hidden" id="delete_id" name="_id">
+			<input type="hidden" name="action" value="delete">
+		</form>
 
 		<script src="//code.jquery.com/jquery-latest.js"></script>
 		<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.8.23/jquery-ui.min.js"></script>

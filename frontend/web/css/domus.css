@@ -3,7 +3,6 @@
 }
 
 .navbar-fixed-top .navbar-inner {
-	padding: 0 20px;
 }
 
 .footer {
@@ -129,4 +128,10 @@ a.dropdown-toggle, ul.dropdown-menu > li > a {
 
 ul.dropdown-menu i[class^="icon-"], ul.dropdown-menu i[class*=" icon-"] {
 	margin-top: -1px;
+}
+
+div.widget-body .alert {
+	border-radius: 0;
+	-moz-border-radius: 0;
+	-webkit-border-radius: 0;
 }

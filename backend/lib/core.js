@@ -273,6 +273,9 @@ var Domus = {
 					if (err || !widget) return res.send(400, 'No such widget... dummy');
 
 					Domus.getWidgetItems(widget, function (items) {
+						if (items.error) {
+							return res.json({error:items.error});
+						}
 						res.json({ 'items' : items });
 					});
 				});
@@ -326,7 +329,9 @@ var Domus = {
 		if (!cached || stale) {
 			fparser.parseUrl(widget.source, function (err, meta, articles)
 			{
-				if (err) return callback([]);
+				if (err) return callback({
+					error: err
+				});
 				var articles = articles.slice(0, widget.count);
 				var items = [];
 
