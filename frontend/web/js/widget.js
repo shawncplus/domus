@@ -49,31 +49,11 @@ $(function () {
 	{
 		var widget_id = $(widget).data('id');
 		var $body = $(widget).find('.widget-body');
-		$.getJSON('widget/' + widget_id, function (resp) {
-			var $body = $(widget).find('.widget-body');
-			$body.empty();
-			var collapsed = false;
-			$.each(resp.items, function (i, item) {
-				$body.append($(
-				'<div class="accordion-group">' + 
-					'<div class="accordion-heading">' +
-						'<a class="accordion-toggle" data-parent="#' + $(widget).attr('id') + ' .widget-body" data-toggle="collapse" href="#widget-body-' + widget_id + i + '">' + item.title + '</a>' +
-					'</div>' +
-					'<div id="widget-body-' + widget_id + i +'" class="accordion-body collapse">' +
-						'<div class="accordion-inner">' + item.preview + '</div>' +
-						'<div class="accordion-inner-footer">' +
-							'<a class="btn btn-small btn-block btn-primary" target="_blank" href="' + item.link + '">See full article</a>' +
-						'</div>' +
-					'</div>' +
-				'<div>'
-				));
-				collapsed = true;
-			});
-
+		$body.load('widget/' + widget_id, function (resp)
+		{
 			$(widget).find('.widget-header a[data-action=edit]').click(function ()
 			{
 			});
-
 
 			$(widget).find('.widget-header a[data-action=delete]').click(function ()
 			{

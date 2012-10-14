@@ -125,7 +125,12 @@ var Domus = {
 			{
 				rest.get(Domus.config.api_server.host + '/widget/' + req.params.widget_id + '/content/').on('complete', function (data)
 				{
-					res.json(data);
+					res.render('widget.html.twig', {
+						widget: {
+							id: req.params.widget_id,
+							items: data.items || []
+						}
+					});
 				});
 			},
 

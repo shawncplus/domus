@@ -1,0 +1,21 @@
+{% if error %}
+	<div class="alert alert-error">{{ error }}</div>
+{% else %}
+	{% set index = 0 %}
+	{% for item in widget.items %}
+		{% set bodyid = "widget-body-" ~ widget.id ~ index %}
+		<div class="accordion-group">
+			<div class="accordion-heading{% if index == 0 %} accordion-toggle-active{% endif %}">
+				<a class="accordion-toggle" data-parent="#widget-{{ widget.id }} .widget-body" data-toggle="collapse" href="#{{ bodyid }}">{{ item.title|striptags }}</a>
+			</div>
+			<div id="{{ bodyid }}" class="accordion-body collapse{% if index == 0 %} in{% endif %}">
+				<div class="accordion-inner">{{ item.preview|striptags }}</div>
+				<div class="accordion-inner-footer">
+					<a class="btn btn-small btn-block btn-primary" target="_blank" href="{{ item.link }}">See full article</a>
+				</div>
+			</div>
+		</div>
+	{# set inactive so I know which is the expanded item, possibly make save the previously expanded item in the future #}
+	{% set index = index + 1 %}
+	{% endfor %}
+{% endif %}
