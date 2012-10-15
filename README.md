@@ -7,6 +7,13 @@ I plan for domus to be my replacement for iGoogle. I don't know if I'm going to 
  * in nodejs - https://github.com/shawncplus/domus/tree/node
  * other languages possibly coming soon...
 
+TODO List
+----
+
+ * Tabs - Allow you to have different tabs
+ * Non-rss items - Allow you to have things besides rss feeds. OpenSocial seems to be the leading suggestion at the moment. I really want to get gmail in there like the original iGoogle. I may be able to fuss with an iframed mobile gmail...
+
+
 Known Issues
 ----
 
