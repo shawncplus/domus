@@ -394,24 +394,27 @@ var Domus = {
 	 */
 	setup: function (express, app)
 	{
-		fs.mkdirSync(Domus._cache_dir);
 
-		// Clear the cache on startup
-		var rmDir = function(dirPath) {
-			var files = fs.readdirSync(dirPath);
-			if (files.length > 0) {
-				for (var i = 0; i < files.length; i++) {
-					var filePath = dirPath + '/' + files[i];
-					if (fs.statSync(filePath).isFile()) {
-						fs.unlinkSync(filePath);
-					} else {
-						rmDir(filePath);
+		if (!fs.existsSync(Domus._cache_dir)) {
+			fs.mkdirSync(Domus._cache_dir);
+		} else {
+			// Clear the cache on startup
+			var rmDir = function(dirPath) {
+				var files = fs.readdirSync(dirPath);
+				if (files.length > 0) {
+					for (var i = 0; i < files.length; i++) {
+						var filePath = dirPath + '/' + files[i];
+						if (fs.statSync(filePath).isFile()) {
+							fs.unlinkSync(filePath);
+						} else {
+							rmDir(filePath);
+						}
 					}
 				}
-			}
-		};
+			};
 
-		rmDir(Domus._cache_dir);
+			rmDir(Domus._cache_dir);
+		}
 
 		app.configure(function ()
 		{

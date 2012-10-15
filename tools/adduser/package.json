@@ -1,0 +1,9 @@
+{
+	"name": "domus-tools-adduser",
+	"version": "0.0.1",
+	"private": true,
+	"dependencies": {
+		"mongojs": "0.4.x",
+		"bcrypt": "0.7.x"
+	}
+}

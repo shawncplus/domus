@@ -1,6 +1,7 @@
 frontend/cache/*
 frontend/node_modules/*
-backend/cache/*
 backend/node_modules/*
-tools/*
+tools/adduser/node_modules/*
+backend/cache/*
+tools/adduser/dbs
 *.sw*
