@@ -143,7 +143,7 @@ var Domus = {
 						});
 					}
 
-					if (!data.items.length) {
+					if (!data.items || !data.items.length) {
 						return res.render('widget.error.html.twig', {
 							error: 'No news items or invalid source url'
 						});

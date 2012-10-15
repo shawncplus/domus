@@ -1,7 +1,6 @@
 var http = require('http')
     , fs = require('fs')
 	, FeedParser = require('feedparser')
-	, fparser = new FeedParser()
 	, util = require('util')
 	, mongojs = require('mongojs')
 	, bcrypt = require('bcrypt')
@@ -192,6 +191,33 @@ var Domus = {
 					res.json(201, widget);
 				});
 			},
+
+			/**
+			 * Debugging endpoint to get cached versions of widgets
+			 */
+			get: function (req, res)
+			{
+				Domus._db.widgets.find({}, function (err, widgets)
+				{
+					var output = [];
+					widgets.forEach(function (widget)
+					{
+						widget._id = widget._id.toString();
+						var widget_dir = Domus._cache_dir + widget._id.substr(0, 2);
+						var widget_file = widget_dir + '/' + widget._id;
+
+						if (fs.existsSync(widget_file)) {
+							var widget = {
+								widget: widget,
+								content: JSON.parse(fs.readFileSync(widget_file, 'utf8'))
+							};
+							output.push(widget);
+						}
+					});
+
+					res.json(output);
+				});
+			}
 		},
 
 		/**
@@ -327,6 +353,7 @@ var Domus = {
 			false;
 
 		if (!cached || stale) {
+			var fparser = new FeedParser()
 			fparser.parseUrl(widget.source, function (err, meta, articles)
 			{
 				if (err) return callback({
@@ -367,6 +394,25 @@ var Domus = {
 	 */
 	setup: function (express, app)
 	{
+		fs.mkdirSync(Domus._cache_dir);
+
+		// Clear the cache on startup
+		var rmDir = function(dirPath) {
+			var files = fs.readdirSync(dirPath);
+			if (files.length > 0) {
+				for (var i = 0; i < files.length; i++) {
+					var filePath = dirPath + '/' + files[i];
+					if (fs.statSync(filePath).isFile()) {
+						fs.unlinkSync(filePath);
+					} else {
+						rmDir(filePath);
+					}
+				}
+			}
+		};
+
+		rmDir(Domus._cache_dir);
+
 		app.configure(function ()
 		{
 			app.use(express.bodyParser());
