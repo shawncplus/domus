@@ -7,7 +7,7 @@
 		<title>Domus</title>
 	</head>
 
-	<body>
+	<body class="lights-{{ lights }}">
 {% if errors %}
 		<div id="flash">
 			<div class="alert alert-error fade in">
@@ -29,12 +29,15 @@
 		</div>
 {% endif %}
 
-		<div class="navbar navbar-inverse navbar-fixed-top">
+		<div class="navbar {%if lights == 'on'%}navbar-inverse {%endif%}navbar-fixed-top">
 			<div class="navbar-inner">
 				<a class="brand" href="#">Domus</a>
 				<ul class="nav">
 					<li><a href="https://github.com/shawncplus/domus" target="_blank">Code</a></li>
 					<li class="navbar-text faded"><strong>?</strong> - show help</li>
+					<li class="navbar-text" id="lightswitch"><button class="btn btn-small" data-state="{{ lights }}">
+						{% if lights == 'on' %} Kill the lights {% else %} Light it up {% endif %}
+					</button></li>
 					<li class="divider-vertical"></li>
 				</ul>
 				<form class="navbar-form pull-right" action="http://google.com/search">
@@ -69,7 +72,7 @@
 {% endfor %}
 		</div>
 
-		<div id="footer" class="navbar navbar-inverse navbar-fixed-bottom">
+		<div id="footer" class="navbar {%if lights == 'on'%}navbar-inverse {%endif%}navbar-fixed-bottom">
 			<div class="navbar-inner">
 				<a id="add_button" href="#" role="button" class="btn btn-success pull-left" data-action="add">Add Thing</a>
 				<a href="/logout" class="btn btn-primary pull-right">Logout</a>

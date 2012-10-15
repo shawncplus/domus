@@ -1,8 +1,29 @@
+body.lights-off {
+	background-image: url(/static/img/noisy_net.png);
+}
+
 .navbar-static-top .container, .navbar-fixed-top .container, .navbar-fixed-bottom .container {
 	width: 600px;
 }
 
 .navbar-fixed-top .navbar-inner {
+}
+
+.navbar button.btn-small {
+	margin-top: 0;
+}
+
+.navbar .nav > li > button {
+	padding: 0 10px;
+	margin: 0 10px;
+}
+
+#lightswitch {
+	width: 110px;
+}
+
+#lightswitch button {
+	width: 95px;
 }
 
 .footer {

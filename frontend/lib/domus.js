@@ -27,7 +27,8 @@ var Domus = {
 				rest.get(Domus.config.api_server.host + '/user/' + req.user.email + '/widget/').on('complete', function (data)
 				{
 					var params = {
-						widgets: data
+						widgets: data,
+						lights: req.query.lights || 'on'
 					};
 
 					["errors", "add_error", "addform"].forEach(function (e)

@@ -149,4 +149,34 @@ $(function () {
 			events[char](e, char, e.which);
 		}
 	});
+
+
+	// Dat lightswitch
+	$('#lightswitch button').click(function ()
+	{
+		var state = $(this).data('state');
+		$(this).toggleClass('btn-inverse');
+		$('.navbar').toggleClass('navbar-inverse');
+		$('body').toggleClass('lights-off');
+
+		switch(state)
+		{
+			case 'on':
+				$(this).html('Light it up');
+				$(this).data('state', 'off');
+				if (!window.location.hash) {
+					window.history.replaceState({}, document.title, window.location.href + '#lights-off');
+				}
+				break;
+			case 'off':
+				$(this).html('Kill the lights');
+				$(this).data('state', 'on');
+				window.history.replaceState({}, document.title, window.location.href.replace(new RegExp(window.location.hash + '$'), ''));
+				break;
+		}
+	});
+
+	if (window.location.hash === '#lights-off') {
+		$('#lightswitch button').click();
+	}
 });
