@@ -24,10 +24,10 @@ var Domus = {
 		'/' : {
 			get: [ passport.requireAuth, function(req, res)
 			{
-				rest.get(Domus.config.api_server.host + '/user/' + req.user.email + '/widget/').on('complete', function (data)
+				rest.get(Domus.config.api_server.host + '/user/' + req.user.email).on('complete', function (data)
 				{
 					var params = {
-						widgets: data,
+						tabs: data.tabs,
 						lights: req.query.lights || 'on'
 					};
 
@@ -75,11 +75,34 @@ var Domus = {
 					delete req.body.action;
 					Domus.deleteWidget(req.body._id, req.user.email, callback);
 					break;
+				case 'move':
+					// move widget to different tab
+					break;
 				default:
 					res.json({ error: "WTF?", request: params });
 					break;
 				}
 			}]
+		},
+
+		/**
+		 * Render a tab
+		 * @view ../views/tab.html.twig
+		 */
+		'/tab/:tab_id': {
+			get: function (req, res)
+			{
+				rest.get(Domus.config.api_server.host + '/tab/' + req.params.tab_id).on('complete', function (data)
+				{
+					if (data.error) {
+						return res.render('widget.error.html.twig', {
+							error: data.error
+						});
+					}
+
+					res.render('tab.html.twig', data);
+				});
+			}
 		},
 
 		/**

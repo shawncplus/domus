@@ -1,0 +1,21 @@
+{% for widget in widgets %}
+	<div class="widget" data-id="{{ widget._id }}" id="widget-{{ widget._id }}" style="position:absolute;left:{{ widget.position.left }}px;top:{{ widget.position.top }}px">
+		<ul class="nav nav-tabs widget-header">
+			<li class="active"><h4>{{ widget.title }}</h4></li>
+			<li class="dropdown">
+			<a class="dropdown-toggle" data-toggle="dropdown" data-parent="{{ widget._id }}"><b class="caret"></b></a>
+				<ul class="dropdown-menu">
+					<li><a data-action="edit" data-target="{{ widget._id }}"><i class="icon-pencil"></i> Edit</a></li>
+					<li><a data-action="delete" data-target="{{ widget._id }}"><i class="icon-fire"></i> Delete</a></li>
+					<li><a data-action="move" data-target="{{ widget._id }}"><i class="icon-share-alt"></i> Move to tab...</a></li>
+				</ul>
+			</li>
+		</ul>
+		<div class="widget-body">
+			<div class="progress progress-striped active">
+				<div class="bar" style="width: 100%;"></div>
+			</div>
+		</div>
+	</div>
+{% endfor %}
+{# vim: set ft=html.twig fdm=indent : #}

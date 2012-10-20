@@ -1,9 +1,20 @@
 $(function () {
+	// draggable using live events
+	(function ($) {
+		$.fn.liveDraggable = function (opts) {
+			this.live("mouseover", function() {
+				if (!$(this).data("init")) {
+					$(this).data("init", true).draggable(opts);
+				}
+			});
+			return $();
+		};
+	}(jQuery));
 
 	// Fit the body to the window
 	var fit = function () {
-		var fix = $('#footer').position().top - $('#widget-container').offset().top - ($('#footer').height() / 2);
-		$('#widget-container').height(fix);
+		var fix = $('#footer').position().top - $('#tab-container').offset().top - ($('#footer').height() / 2);
+		$('#tab-container').height(fix);
 	};
 
 	fit();
@@ -19,7 +30,7 @@ $(function () {
 		$('#loadingmodal').modal('hide');
 	};
 
-	$('.widget').draggable({
+	$('.widget').liveDraggable({
 		handle: 'ul.nav li.active',
 		cursor: 'move',
 		opacity: 0.35,
@@ -45,20 +56,34 @@ $(function () {
 		}
 	});
 
-	$('.widget').each(function (index, widget)
+	// Load first tab
+	$('div.tab-pane.active').load('/tab/' + $('div.tab-pane.active').data('id'), function (response)
 	{
-		var widget_id = $(widget).data('id');
-		var $body = $(widget).find('.widget-body');
-		$body.load('widget/' + widget_id, function (resp)
+		$('.widget').each(function (index, widget)
 		{
-			$(widget).find('.widget-header a[data-action=edit]').click(function ()
-			{
-			});
-
-			$(widget).find('.widget-header a[data-action=delete]').click(function ()
-			{
-			});
+			var widget_id = $(widget).data('id');
+			var $body = $(widget).find('.widget-body');
+			$body.load('/widget/' + widget_id);
 		});
+		$('div.tab-pane.active').data('loaded', 1);
+	});
+
+	// lazyload other tabs
+	$('#tablist a').click(function ()
+	{
+		var tab = $($(this).attr('href'));
+		if (!tab.data('loaded'))
+			tab.load('/tab/' + tab.data('id'), function (response)
+			{
+				$('#' + tab.attr('id') + ' .widget').each(function (index, widget)
+				{
+					var widget_id = $(widget).data('id');
+					var $body = $(widget).find('.widget-body');
+					$body.load('/widget/' + widget_id);
+				});
+
+				tab.data('loaded', 1);
+			});
 	});
 
 	$('a.accordion-toggle').live('click', function ()

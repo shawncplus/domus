@@ -13,17 +13,17 @@
 			<div class="alert alert-error fade in">
 				<button type="button" class="close" data-dismiss="alert">&times;</button>
 				<p>The following errors happened
-{% if addform %}
+	{% if addform %}
 				while adding a new thing.</p>
 				<a href="#editThing" role="button" class="btn btn-warning" data-toggle="modal">Fix it</a>
-{% else %}
+	{% else %}
 				</p>
-{% endif %}
+	{% endif %}
 
 				<ul class="unstyled">
-{% for e in errors %}
+	{% for e in errors %}
 					<li>{{ e }}</li>
-{% endfor %}
+	{% endfor %}
 				</ul>
 			</div>
 		</div>
@@ -48,28 +48,22 @@
 			</div>
 		</div>
 
-		<div id="widget-container" class="container">
-{% for widget in widgets %}
-			<div class="widget" data-id="{{ widget._id }}" id="widget-{{ widget._id }}" style="position:absolute;left:{{ widget.position.left }}px;top:{{ widget.position.top }}px">
-				<ul class="nav nav-tabs widget-header">
-					<li class="active"><h4>{{ widget.title }}</h4></li>
-					<li class="dropdown">
-					<a class="dropdown-toggle" data-toggle="dropdown" data-parent="{{ widget._id }}"><b class="caret"></b></a>
-						<ul class="dropdown-menu">
-							<li><a data-action="edit" data-target="{{ widget._id }}"><i class="icon-pencil"></i> Edit</a></li>
-							<li>
-								<a data-action="delete" data-target="{{ widget._id }}"><i class="icon-fire"></i> Delete</a>
-							</li>
-						</ul>
-					</li>
-				</ul>
-				<div class="widget-body">
-					<div class="progress progress-striped active">
-						<div class="bar" style="width: 100%;"></div>
-					</div>
-				</div>
-			</div>
+		<div id="tab-container" class="container">
+			<ul class="nav nav-tabs" id="tablist">
+{% set index = 0 %}
+{% for tab in tabs %}
+				<li{%if index == 0%} class="active"{%endif%}><a href="#tab-{{tab.id}}" data-id="{{tab.id}}" data-toggle="tab">{{tab.title}}</a></li>
+{% set index = index + 1 %}
 {% endfor %}
+			</ul>
+
+			<div class="tab-content">
+{% set index = 0 %}
+{% for tab in tabs %}
+				<div class="tab-pane{%if index == 0%} active{%endif%}" id="tab-{{tab.id}}" data-id="{{tab.id}}"></div>
+{% set index = index + 1 %}
+{% endfor %}
+			</div>
 		</div>
 
 		<div id="footer" class="navbar {%if lights == 'on'%}navbar-inverse {%endif%}navbar-fixed-bottom">
@@ -166,3 +160,5 @@
 		<script src="/static/js/widget.js"></script>
 	</body>
 </html>
+
+{# vim: set fdm=indent : #}
