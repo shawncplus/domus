@@ -60,8 +60,12 @@ var Domus = {
 
 				Domus._db.users.findOne({email: req.params.user}, function (err, user)
 				{
-					res.json({
-						email: user.email
+					Domus._db.tabs.find({ _id : { $in : user.tabs }}, function (err, tabs)
+					{
+						res.json({
+							email: user.email,
+							tabs: tabs
+						});
 					});
 				});
 			},
@@ -105,24 +109,16 @@ var Domus = {
 		/**
 		 * Endpoint for adding/removing a user's widgets
 		 */
-		'/user/:user/widget/:widget_id': {
+		'/user/:user/tab/:tab_id': {
 			put: function (req, res)
 			{
 				Domus._db.users.findOne({email: req.params.user}, function (err, user)
 				{
 					if (err || !user) return res.json(400, { error: 'Bad user' });
 
-					var current_widgets = {};
-					user.widgets.forEach(function (e) { current_widgets[e] = 1 });
-					current_widgets[req.params.widget_id] = 1;
-					var new_widgets = [];
-					for(var e in current_widgets) {
-						new_widgets.push(e);
-					}
-
 					Domus._db.users.update(
 						{email: req.params.user},
-						{ $set: { widgets: new_widgets }},
+						{$addToSet: {widgets: req.params.widget_id}},
 						{multi: false, safe: true},
 						function (err, count)
 						{
@@ -142,17 +138,9 @@ var Domus = {
 				{
 					if (err || !user) return res.json(400, { error: 'Bad user' });
 
-					var new_widgets = [];
-
-					user.widgets.forEach(function (e)
-					{
-						if (e === req.params.widget_id) return;
-						new_widgets.push(e);
-					});
-
 					Domus._db.users.update(
 						{email: req.params.user},
-						{ $set: { widgets: new_widgets }},
+						{$pull: {tabs: req.params.tab_id}},
 						{multi: false, safe: true},
 						function (err, count)
 						{
@@ -164,7 +152,68 @@ var Domus = {
 						}
 					);
 				});
+			}
+		},
 
+		/**
+		 * Get a specific tab
+		 * @param tab_id
+		 * @return json
+		 */
+		'/tab/:tab_id': {
+			get: function (req, res)
+			{
+				Domus._db.tabs.findOne({_id: mongojs.ObjectId(req.params.tab_id)}, function (err, tab)
+				{
+					if (err || !tab) return res.send(400, 'No such tab... dummy');
+					Domus._db.widgets.find({_id: {$in : tab.widgets}}, function (err, widgets)
+					{
+						tab.widgets = widgets;
+						res.json(tab);
+					});
+				});
+			}
+		},
+
+		/**
+		 * Add/remove a widget to a tab
+		 * @param tab_id
+		 * @param widget_id
+		 * @return json
+		 */
+		'/tab/:tab_id/widget/:widget_id': {
+			put: function (req, res)
+			{
+				Domus._db.tabs.update(
+					{_id: mongojs.ObjectId(req.params.tab_id)},
+					{$addToSet: { widgets: req.params.widget_id}},
+					{multi: false, safe: true},
+					function (err, count)
+					{
+						if (count) {
+							res.send(200);
+						} else {
+							res.json(400, { error: err });
+						}
+					}
+				);
+			},
+
+			'delete': function (req, res)
+			{
+				Domus._db.tabs.update(
+					{_id: mongojs.ObjectId(req.params.tab_id)},
+					{$pull: {tabs: req.params.widget_id}},
+					{multi: false, safe: true},
+					function (err, count)
+					{
+						if (count) {
+							res.send(200);
+						} else {
+							res.json(400, { error: err });
+						}
+					}
+				);
 			}
 		},
 
@@ -421,7 +470,7 @@ var Domus = {
 			app.use(express.bodyParser());
 		});
 
-		this._db = mongojs.connect(app.get('dbconnection'), ["users", "widgets"]);
+		this._db = mongojs.connect(app.get('dbconnection'), ["users", "widgets", "tabs"]);
 
 		for (var route in this._routes) {
 			var events = this._routes[route];

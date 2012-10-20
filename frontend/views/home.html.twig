@@ -52,7 +52,7 @@
 			<ul class="nav nav-tabs" id="tablist">
 {% set index = 0 %}
 {% for tab in tabs %}
-				<li{%if index == 0%} class="active"{%endif%}><a href="#tab-{{tab.id}}" data-id="{{tab.id}}" data-toggle="tab">{{tab.title}}</a></li>
+				<li{%if index == 0%} class="active"{%endif%}><a href="#tab-{{tab._id}}" data-id="{{tab._id}}" data-toggle="tab">{{tab.title}}</a></li>
 {% set index = index + 1 %}
 {% endfor %}
 			</ul>
@@ -60,7 +60,7 @@
 			<div class="tab-content">
 {% set index = 0 %}
 {% for tab in tabs %}
-				<div class="tab-pane{%if index == 0%} active{%endif%}" id="tab-{{tab.id}}" data-id="{{tab.id}}"></div>
+				<div class="tab-pane{%if index == 0%} active{%endif%}" id="tab-{{tab._id}}" data-id="{{tab._id}}"></div>
 {% set index = index + 1 %}
 {% endfor %}
 			</div>
