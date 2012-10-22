@@ -69,7 +69,7 @@ $(function () {
 	});
 
 	// lazyload other tabs
-	$('#tablist a').click(function ()
+	$('#tablist a[href]').click(function ()
 	{
 		// Skip the add button
 		if ($(this).hasClass('btn')) {
@@ -96,6 +96,7 @@ $(function () {
 			});
 	});
 
+	// Add/remove the active classes because this isn't built into the accordion bootstrap stuff
 	$('a.accordion-toggle').live('click', function ()
 	{
 		$body = $($(this).data('parent')).find('div.accordion-heading').removeClass('accordion-toggle-active');
@@ -109,8 +110,17 @@ $(function () {
 		switch (action) {
 		case 'delete':
 			$('#delete_id').val($(this).data('target'));
-			$('#delete_tab_id').val($('div.tab-pane.active').data('id'));
+			$('#delete_widget_tab_id').val($('div.tab-pane.active').data('id'));
 			$('#delete_form').submit();
+			break;
+		case 'delete-tab':
+			var answer = confirm("Are you sure you want to delete this tab? It'll delete the widgets along with it, move them to another tab if you want to save them.");
+
+			if (answer) {
+				var tab = $('div.tab-pane.active').data('id');
+				$('#delete_tab_id').val(tab);
+				$('#delete_tab_form').submit();
+			}
 			break;
 		}
 	});
@@ -138,6 +148,11 @@ $(function () {
 	$('#addTabForm').live('shown', function ()
 	{
 		$('#input-title-tab').focus();
+	});
+
+	$('#moveForm').live('shown', function ()
+	{
+		$('#move_source_tab').val($('div.tab-pane.active').data('id'));
 	});
 
 	$('.alert').alert();

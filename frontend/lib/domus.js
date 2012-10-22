@@ -81,8 +81,18 @@ var Domus = {
 					Domus.addTab(req.body, req.user.email, callback);
 					// add a tab... duh
 					break;
+				case 'delete_tab':
+					rest.get(Domus.config.api_server.host + '/user/' + req.user.email).on('complete', function (data)
+					{
+						if (data.tabs.length === 1) {
+							return callback({errors: ["You can't delete your last tab, don't ask me why."]});
+						}
+						Domus.deleteTab(req.body._id, req.user.email, callback);
+					});
+					break;
 				case 'move':
 					// move widget to different tab
+					Domus.moveWidget(req.body.source_tab, req.body.target_tab, req.body.widget, callback);
 					break;
 				default:
 					res.json({ error: "WTF?", request: params });
@@ -225,6 +235,15 @@ var Domus = {
 				break;
 			case 'add_tab':
 				return res.render('forms/add_tab.html.twig');
+			case 'move':
+				rest.get(Domus.config.api_server.host + '/user/' + req.user.email).on('complete', function (data)
+				{
+					return res.render('forms/move.html.twig', {
+						widget: req.query.widget,
+						tabs: data.tabs
+					});
+				});
+				break;
 			}
 		}
 	},
@@ -355,16 +374,31 @@ var Domus = {
 				});
 			}
 
-			rest.del(Domus.config.api_server.host + '/widget/' + widget_id).on('complete', function (data, response)
-			{
-				if (data.error) {
-					return callback({
-						errors: [ data.error ]
-					});
-				}
+			return callback();
+		});
+	},
 
-				return callback();
-			});
+	/**
+	 * Move a widget between tabs
+	 * @param {string} source_tab
+	 * @param {string} target_tab
+	 * @param {string} widget
+	 * @param {function} callback
+	 */
+	moveWidget: function (source_tab, target_tab, widget, callback)
+	{
+		rest.postJson(Domus.config.api_server.host + '/widget/' + widget + '/move/', {
+			source: source_tab,
+			target: target_tab
+		}).on('complete', function (data)
+		{
+			if (data.error) {
+				return callback({
+					errors: [ data.error ]
+				});
+			}
+
+			return callback();
 		});
 	},
 
@@ -409,7 +443,25 @@ var Domus = {
 		});
 	},
 
+	/**
+	 * Delete a tab and the user association with it
+	 * @param {string} tab_id
+	 * @param {string} user
+	 * @param {function} callback
+	 */
+	deleteTab: function (tab_id, user, callback)
+	{
+		rest.del(Domus.config.api_server.host + '/user/' + user + '/tab/' + tab_id).on('complete', function (data, response)
+		{
+			if (data.error) {
+				return callback({
+					errors: [ data.error ]
+				});
+			}
 
+			return callback();
+		});
+	},
 
 	/**
 	 * Helper for making sure widget form data is valid

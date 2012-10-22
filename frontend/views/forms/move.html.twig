@@ -1,0 +1,22 @@
+<form class="form-horizontal" method="post" id="move_form">
+	<input type="hidden" name="action" value="move">
+	<input type="hidden" id="move_source_tab" name="source_tab">
+	<input type="hidden" id="move_widget" name="widget" value="{{widget}}">
+	<div class="control-group">
+		<label class="control-label" for="input-title">Tab</label>
+		<div class="controls">
+			<select name="target_tab">
+				{% for tab in tabs %}
+				<option value="{{tab._id}}">{{tab.title}}</option>
+				{% endfor %}
+			</select>
+		</div>
+	</div>
+
+	<div class="modal-footer">
+		<button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+		<button type="submit" class="btn btn-primary">Move</button>
+	</div>
+</form>
+
+

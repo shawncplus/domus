@@ -11,7 +11,11 @@
 						</a>
 					</li>
 					<li><a data-action="delete" data-target="{{ widget._id }}"><i class="icon-fire"></i> Delete</a></li>
-					<li><a data-action="move" data-target="{{ widget._id }}"><i class="icon-share-alt"></i> Move to tab...</a></li>
+					<li>
+						<a id="move_widget" href="/form/move?widget={{widget._id}}" data-target="#moveForm" data-toggle="modal">
+							<i class="icon-share-alt"></i> Move to tab...
+						</a>
+					</li>
 				</ul>
 			</li>
 		</ul>

@@ -118,12 +118,19 @@ var Domus = {
 
 					Domus._db.users.update(
 						{email: req.params.user},
-						{$pull: {tabs: req.params.tab_id}},
+						{$pull: {tabs: mongojs.ObjectId(req.params.tab_id)}},
 						{multi: false, safe: true},
 						function (err, count)
 						{
 							if (count) {
-								res.send(200);
+								Domus.deleteTab(req.params.tab_id, function (response)
+								{
+									if (!response) {
+										res.json(400, {error: 'Delete of tab failed...'});
+									} else {
+										res.send(200);
+									}
+								});
 							} else {
 								res.json(400, { error: err });
 							}
@@ -173,6 +180,18 @@ var Domus = {
 						res.json(tab);
 					});
 				});
+			},
+
+			'delete': function (req, res)
+			{
+				Domus.deleteTab(req.params.tab_id, function (response)
+				{
+					if (!response) {
+						res.send(400, {error: 'Delete failed...'});
+					} else {
+						res.send(200);
+					}
+				});
 			}
 		},
 
@@ -209,7 +228,17 @@ var Domus = {
 					function (err, count)
 					{
 						if (count) {
-							res.send(200);
+							Domus._db.widgets.remove({_id: mongojs.ObjectId(req.params.widget_id)}, {safe: true}, function (err, response)
+							{
+								if (response) {
+									Domus.cleanupWidget(req.params.widget_id, function ()
+									{
+										res.send(200);
+									});
+								} else {
+									res.json(400, { error: "Delete failed" });
+								}
+							});
 						} else {
 							res.json(400, { error: err });
 						}
@@ -356,7 +385,62 @@ var Domus = {
 					});
 				});
 			}
+		},
+
+		'/widget/:widget_id/move/': {
+			post: function (req, res)
+			{
+				Domus._db.tabs.update(
+					{_id: mongojs.ObjectId(req.body.source)},
+					{$pull: { widgets: req.params.widget_id}},
+					{multi: false, safe: true},
+					function (err, count)
+					{
+						if (count) {
+							Domus._db.tabs.update(
+								{_id: mongojs.ObjectId(req.body.target)},
+								{$addToSet: { widgets: req.params.widget_id}},
+								{multi: false, safe: true},
+								function (err, count)
+								{
+									if (count) {
+										res.send(200);
+									} else {
+										res.json(400, { error: err });
+									}
+								}
+							);
+						} else {
+							res.json(400, { error: err });
+						}
+					}
+				);
+			}
 		}
+	},
+
+	/**
+	 * There's a lot involved in removing a tab so make its own function
+	 * @param string id Tab id
+	 * @param function callback
+	 */
+	deleteTab: function (id, callback)
+	{
+		Domus._db.tabs.findOne({_id: mongojs.ObjectId(id)}, function (err, tab)
+		{
+			tab.widgets.forEach(function (widget)
+			{
+				Domus._db.widgets.remove({_id: mongojs.ObjectId(widget)}, {safe: true}, function (err, response)
+				{
+					Domus.cleanupWidget(widget, function () { });
+				});
+			});
+
+			Domus._db.tabs.remove({_id: mongojs.ObjectId(id)}, {safe: true}, function (err, response)
+			{
+				return callback(response);
+			});
+		});
 	},
 
 	/**
