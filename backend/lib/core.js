@@ -85,28 +85,6 @@ var Domus = {
 		},
 
 		/**
-		 * Get a list of widgets for a user
-		 */
-		'/user/:user/widget/': {
-			get: function (req, res)
-			{
-				Domus._db.users.findOne({email: req.params.user}, function (err, user)
-				{
-					if (err || !user) return res.json(400, { error: 'Bad user' });
-
-					var ids = [];
-					user.widgets.forEach(function (id) { ids.push(mongojs.ObjectId(id)); });
-
-					Domus._db.widgets.find({ _id: { $in : ids}}, function (err, widgets)
-					{
-						if (err || !widgets) return res.json(400, { error: err });
-						res.json(widgets);
-					});
-				});
-			}
-		},
-
-		/**
 		 * Endpoint for adding/removing a user's widgets
 		 */
 		'/user/:user/tab/:tab_id': {
@@ -118,7 +96,7 @@ var Domus = {
 
 					Domus._db.users.update(
 						{email: req.params.user},
-						{$addToSet: {widgets: req.params.widget_id}},
+						{$addToSet: {tabs: req.params.tab_id}},
 						{multi: false, safe: true},
 						function (err, count)
 						{
@@ -156,6 +134,29 @@ var Domus = {
 		},
 
 		/**
+		 * Endpoint for creating a new tab
+		 */
+		'/tab/': {
+			post: function (req, res)
+			{
+				var required = ['title'];
+
+				var valid = true;
+				if (!required.every(function (e) { return e in req.body }))
+				{
+					return res.json(400, {
+						error: "Missing one of required parameters: " + required.join(', ')
+					});
+				}
+
+				Domus._db.tabs.insert(req.body, {safe: true}, function (err, tab)
+				{
+					res.json(201, tab);
+				});
+			}
+		},
+
+		/**
 		 * Get a specific tab
 		 * @param tab_id
 		 * @return json
@@ -166,7 +167,7 @@ var Domus = {
 				Domus._db.tabs.findOne({_id: mongojs.ObjectId(req.params.tab_id)}, function (err, tab)
 				{
 					if (err || !tab) return res.send(400, 'No such tab... dummy');
-					Domus._db.widgets.find({_id: {$in : tab.widgets}}, function (err, widgets)
+					Domus._db.widgets.find({_id: {$in : tab.widgets.map(mongojs.ObjectId)}}, function (err, widgets)
 					{
 						tab.widgets = widgets;
 						res.json(tab);

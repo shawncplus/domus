@@ -1,0 +1,54 @@
+<form class="form-horizontal" method="post" id="addform">
+	<input type="hidden" name="action" value="add">
+	<input type="hidden" id="input-_id" name="_id" value="">
+	<div class="control-group">
+		<label class="control-label" for="input-title">Title</label>
+		<div class="controls">
+			<input id="input-title" name="title" type="text">
+		</div>
+	</div>
+
+	<div class="control-group">
+		<label class="control-label" for="input-source">Source</label>
+		<div class="controls">
+			<input id="input-source" name="source" type="text" placeholder="http://example.com/example.rss">
+		</div>
+	</div>
+
+	<div class="control-group">
+		<label class="control-label" for="input-count"># of stories</label>
+		<div class="controls">
+			<div class="input-prepend">
+				<span class="add-on range-preview"></span>
+				<input id="input-count" name="count" type="range" min="1" max="5" data-default="3" value="3">
+			</div>
+		</div>
+	</div>
+
+	<div class="control-group">
+		<label class="control-label" for="input-refresh_interval">Refresh Interval</label>
+		<div class="controls">
+			<div class="input-prepend input-append">
+				<span class="add-on range-preview"></span>
+				<input id="input-refresh_interval" name="refresh_interval" type="range" data-default="15" value="15" step="5" min="5" max="60">
+				<span class="add-on">minutes</span>
+			</div>
+		</div>
+	</div>
+
+	<div class="control-group">
+		<label class="control-label" for="input-refresh_interval">Add to tab</label>
+		<div class="controls">
+			<select name="tab" id="input-tab">
+				{% for tab in tabs %}
+				<option value="{{tab._id}}">{{tab.title}}</option>
+				{% endfor %}
+			</select>
+		</div>
+	</div>
+
+	<div class="modal-footer">
+		<button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+		<button type="submit" class="btn btn-primary">Save changes</button>
+	</div>
+</form>

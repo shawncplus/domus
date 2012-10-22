@@ -12,13 +12,7 @@
 		<div id="flash">
 			<div class="alert alert-error fade in">
 				<button type="button" class="close" data-dismiss="alert">&times;</button>
-				<p>The following errors happened
-	{% if addform %}
-				while adding a new thing.</p>
-				<a href="#editThing" role="button" class="btn btn-warning" data-toggle="modal">Fix it</a>
-	{% else %}
-				</p>
-	{% endif %}
+				<p>The following errors happened</p>
 
 				<ul class="unstyled">
 	{% for e in errors %}
@@ -55,6 +49,7 @@
 				<li{%if index == 0%} class="active"{%endif%}><a href="#tab-{{tab._id}}" data-id="{{tab._id}}" data-toggle="tab">{{tab.title}}</a></li>
 {% set index = index + 1 %}
 {% endfor %}
+				<li><a class="btn btn-small btn-warning" id="add_tab"><i class="icon-plus-sign icon-white"></i></a></li>
 			</ul>
 
 			<div class="tab-content">
@@ -68,7 +63,7 @@
 
 		<div id="footer" class="navbar {%if lights == 'on'%}navbar-inverse {%endif%}navbar-fixed-bottom">
 			<div class="navbar-inner">
-				<a id="add_button" href="#" role="button" class="btn btn-success pull-left" data-action="add">Add Thing</a>
+				<a id="add_button" href="/add_form/" data-target="#editThing" role="button" class="btn btn-success pull-left" data-toggle="modal">Add Thing</a>
 				<a href="/logout" class="btn btn-primary pull-right">Logout</a>
 			</div>
 		</div>
@@ -76,53 +71,9 @@
 		<div class="modal hide fade" id="editThing" tabindex="-1" role="dialog" aria-labelledby="editThingLabel" aria-hidden="true">
 			<div class="modal-header">
 				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
-				<h3 id="editThingLabel">Add/update thing</h3>
+				<h3 id="editThingLabel">Add/Update thing</h3>
 			</div>
-
-			<form class="form-horizontal" method="post">
-				<input type="hidden" name="action" value="add">
-				<input type="hidden" id="input-_id" name="_id" value="">
-				<div class="modal-body">
-					<div class="control-group">
-						<label class="control-label" for="input-title">Title</label>
-						<div class="controls">
-							<input id="input-title" name="title" type="text" {% if addform %}value="{{addform.title}}"{% endif %}>
-						</div>
-					</div>
-
-					<div class="control-group">
-						<label class="control-label" for="input-source">Source</label>
-						<div class="controls">
-							<input id="input-source" name="source" type="text" placeholder="http://example.com/example.rss" {% if addform %}value="{{addform.source}}"{% endif %}>
-						</div>
-					</div>
-
-					<div class="control-group">
-						<label class="control-label" for="input-count"># of stories</label>
-						<div class="controls">
-							<div class="input-prepend">
-								<span class="add-on range-preview"></span>
-								<input id="input-count" name="count" type="range" min="1" max="5" data-default="3" value="{%if addform %}{{addform.count}}{%else%}3{%endif%}">
-							</div>
-						</div>
-					</div>
-
-					<div class="control-group">
-						<label class="control-label" for="input-refresh_interval">Refresh Interval</label>
-						<div class="controls">
-							<div class="input-prepend input-append">
-								<span class="add-on range-preview"></span>
-								<input id="input-refresh_interval" name="refresh_interval" type="range" data-default="15" value="{%if addform %}{{addform.refresh_interval}}{%else%}15{%endif%}" step="5" min="5" max="60">
-								<span class="add-on">minutes</span>
-							</div>
-						</div>
-					</div>
-				</div>
-				<div class="modal-footer">
-					<button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
-					<button type="submit" class="btn btn-primary">Save changes</button>
-				</div>
-			</form>
+			<div class="modal-body"></div>
 		</div>
 
 		<div class="modal hide fade" id="loadingmodal" tabindex="-1" role="dialog" aria-labelledby="loadingLabel" aria-hidden="true">
@@ -145,12 +96,13 @@
 				</dl>
 				<h3>Common Issues</h3>
 					<dt>Widget showing wrong feed</dt>
-						<dd>Yeah, yeah, I'm fixing that. You can force a refresh by Editing the widget and saving.</dd?
+						<dd>You can force a refresh by Editing the widget and saving.</dd>
 			</div>
 		</div>
 
 		<form method="post" id="delete_form" style="display: none;">
 			<input type="hidden" id="delete_id" name="_id">
+			<input type="hidden" id="delete_tab_id" name="tab">
 			<input type="hidden" name="action" value="delete">
 		</form>
 

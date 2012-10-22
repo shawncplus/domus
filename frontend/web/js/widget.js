@@ -97,50 +97,26 @@ $(function () {
 	{
 		var action = $(this).data('action');
 		switch (action) {
-		case 'edit':
-			var widget_id = $(this).data('target');
-			$.getJSON('/widget/' + widget_id + '.json', function (response)
-			{
-				$('#editThing form input[name=action]').val(action);
-				for (var field in response) {
-					var isnt_int_field = !~$.inArray(field, ['refresh_interval', 'count']);
-					if (isnt_int_field) {
-						$('#input-' + field).val(response[field]);
-					} else {
-						$('#input-' + field).attr('value', response[field]);
-						$('#input-' + field).trigger('change');
-					}
-				
-				}
-				$('#editThing').modal('show');
-			});
-			break;
-		case 'add':
-			$('#editThing form input[name=action]').val(action);
-			$(['title', 'source', 'refresh_interval', 'count', '_id']).each(function (i, field)
-			{
-				$('#input-' + field).val($('#input-' + field).data('default') || null);
-				$('#input-' + field).trigger('change');
-			});
-			$('#editThing').modal('show');
-			break;
 		case 'delete':
 			$('#delete_id').val($(this).data('target'));
+			$('#delete_tab_id').val($('div.tab-pane.active').data('id'));
 			$('#delete_form').submit();
 			break;
 		}
 	});
-
-	$('#editThing').live('shown', function () {
-		$('#input-title').focus();
-	})
 
 	// Setup the fields so the user can see the actual value of a range input
 	var updateRangePreview = function ()
 	{
 		$(this).prev('span.range-preview').html(this.valueAsNumber);
 	};
-	$('input[type=range]').each(updateRangePreview).live('change', updateRangePreview);
+
+	$('#editThing').live('shown', function ()
+	{
+		$('input[type=range]').each(updateRangePreview).live('change', updateRangePreview);
+		$('#input-title').focus();
+		$('#input-tab').val($('div.tab-pane.active').data('id'));
+	})
 
 	$('.alert').alert();
 

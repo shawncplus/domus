@@ -173,6 +173,11 @@ div.widget-body .alert {
 	padding: 0 10px;
 }
 
+#tablist > li > a.btn-warning:hover {
+	border-color: transparent;
+	background-color: #f89406;
+}
+
 div.tab-content, div.tab-pane {
 	width: 100%;
 	height: 100%;

@@ -73,7 +73,7 @@ var Domus = {
 					break;
 				case 'delete':
 					delete req.body.action;
-					Domus.deleteWidget(req.body._id, req.user.email, callback);
+					Domus.deleteWidget(req.body._id, req.body.tab, req.user.email, callback);
 					break;
 				case 'move':
 					// move widget to different tab
@@ -191,6 +191,34 @@ var Domus = {
 					res.json(data);
 				});
 			}
+		},
+
+		/**
+		 * Get the edit form for a widget
+		 * @view ../views/editform.html.twig
+		 */
+		'/edit_form/:widget_id': function (req, res)
+		{
+			rest.get(Domus.config.api_server.host + '/widget/' + req.params.widget_id).on('complete', function (data)
+			{
+				return res.render('editform.html.twig', {
+					data: data
+				});
+			});
+		},
+
+		/**
+		 * Get the add form
+		 * @view ../views/addform.html.twig
+		 */
+		'/add_form/': function (req, res)
+		{
+			rest.get(Domus.config.api_server.host + '/user/' + req.user.email).on('complete', function (data)
+			{
+				return res.render('addform.html.twig', {
+					tabs: data.tabs
+				});
+			});
 		}
 	},
 
@@ -248,8 +276,12 @@ var Domus = {
 			return callback({ errors: errors });
 		}
 
+		var tab = widget.tab;
+		delete widget.tab;
+
 		widget.position = {};
 		if ('_id' in widget) delete widget._id;
+
 		rest.postJson(Domus.config.api_server.host + '/widget/', widget).on('complete', function (data)
 		{
 			if (data.error) {
@@ -259,7 +291,7 @@ var Domus = {
 			}
 
 			var widget = data[0];
-			rest.put(Domus.config.api_server.host + '/user/' + user + '/widget/' + widget._id).on('complete', function (data)
+			rest.put(Domus.config.api_server.host + '/tab/' + tab + '/widget/' + widget._id).on('complete', function (data)
 			{
 				if (data.error) {
 					return callback({
@@ -304,12 +336,13 @@ var Domus = {
 	/**
 	 * Delete a widget and the user association with it
 	 * @param {string} widget_id
+	 * @param {string} tab_id
 	 * @param {string} user
 	 * @param {function} callback
 	 */
-	deleteWidget: function (widget_id, user, callback)
+	deleteWidget: function (widget_id, tab_id, user, callback)
 	{
-		rest.del(Domus.config.api_server.host + '/user/' + user + '/widget/' + widget_id).on('complete', function (data, response)
+		rest.del(Domus.config.api_server.host + '/tab/' + tab_id + '/widget/' + widget_id).on('complete', function (data, response)
 		{
 			if (data.error) {
 				return callback({
