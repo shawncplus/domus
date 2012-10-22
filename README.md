@@ -8,7 +8,7 @@ I plan for domus to be my replacement for iGoogle. I don't know if I'm going to 
 
 ## TODO List
 
- * Tabs - Allow you to have different tabs
+ * ~~Tabs - Allow you to have different tabs~~ **DONE**
  * Non-rss items - Allow you to have things besides rss feeds. OpenSocial seems to be the leading suggestion at the moment. I really want to get gmail in there like the original iGoogle. I may be able to fuss with an iframed mobile gmail...
 
 ## Running it
