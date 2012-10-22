@@ -76,6 +76,11 @@ $(function () {
 			return;
 		}
 
+		// Update hash on tab select
+		Domus.util.updateHash({
+			tab: $(this).html()
+		});
+
 		var tab = $($(this).attr('href'));
 		if (!tab.data('loaded'))
 			tab.load('/tab/' + tab.data('id'), function (response)
@@ -182,19 +187,42 @@ $(function () {
 			case 'on':
 				$(this).html('Light it up');
 				$(this).data('state', 'off');
-				if (!window.location.hash) {
-					window.history.replaceState({}, document.title, window.location.href + '#lights-off');
-				}
+				Domus.util.updateHash({
+					lights: 'off'
+				});
 				break;
 			case 'off':
 				$(this).html('Kill the lights');
 				$(this).data('state', 'on');
-				window.history.replaceState({}, document.title, window.location.href.replace(new RegExp(window.location.hash + '$'), ''));
+				Domus.util.updateHash({
+					lights: null
+				});
 				break;
 		}
 	});
 
-	if (window.location.hash === '#lights-off') {
-		$('#lightswitch button').click();
+	var options = Domus.util.parseHash(window.location.hash);
+
+	// Handlers for hash items
+	var handlers = {
+		lights: function (val)
+		{
+			switch (val)
+			{
+			case 'off':
+				$('#lightswitch button').click();
+			}
+		},
+
+		tab: function (tab)
+		{
+			$('#tablist a:contains(' + tab + ')').click();
+		}
+	};
+
+	for (var opt in options) {
+		if (opt in handlers) {
+			handlers[opt](options[opt]);
+		}
 	}
 });

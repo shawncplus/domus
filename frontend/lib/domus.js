@@ -28,7 +28,8 @@ var Domus = {
 				{
 					var params = {
 						tabs: data.tabs,
-						lights: req.query.lights || 'on'
+						lights: req.query.lights || 'on',
+						activetab: req.query.tab || 'Home'
 					};
 
 					["errors", "add_error", "addform"].forEach(function (e)
@@ -76,6 +77,8 @@ var Domus = {
 					Domus.deleteWidget(req.body._id, req.body.tab, req.user.email, callback);
 					break;
 				case 'add_tab':
+					delete req.body.action;
+					Domus.addTab(req.body, req.user.email, callback);
 					// add a tab... duh
 					break;
 				case 'move':
@@ -284,8 +287,6 @@ var Domus = {
 		delete widget.tab;
 
 		widget.position = {};
-		if ('_id' in widget) delete widget._id;
-
 		rest.postJson(Domus.config.api_server.host + '/widget/', widget).on('complete', function (data)
 		{
 			if (data.error) {
@@ -366,6 +367,48 @@ var Domus = {
 			});
 		});
 	},
+
+	/**
+	 * Create a tab and add it to the user
+	 * @param {object} tab
+	 * @param {string} user The user id, probably email
+	 * @param {function} callback
+	 */
+	addTab: function (tab, user, callback)
+	{
+		if (!tab.title.trim().length) {
+			return callback({
+				errors: 'No title given...'
+			});
+		}
+
+		tab = {
+			title: tab.title,
+			widgets: []
+		};
+
+		rest.postJson(Domus.config.api_server.host + '/tab/', tab).on('complete', function (data)
+		{
+			if (data.error) {
+				return callback({
+					errors: [ data.error ]
+				});
+			}
+
+			var tab = data[0];
+			rest.put(Domus.config.api_server.host + '/user/' + user + '/tab/' + tab._id).on('complete', function (data)
+			{
+				if (data.error) {
+					return callback({
+						errors: [ data.error ]
+					});
+				}
+
+				return callback();
+			});
+		});
+	},
+
 
 
 	/**

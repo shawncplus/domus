@@ -96,7 +96,7 @@ var Domus = {
 
 					Domus._db.users.update(
 						{email: req.params.user},
-						{$addToSet: {tabs: req.params.tab_id}},
+						{$addToSet: {tabs: mongojs.ObjectId(req.params.tab_id)}},
 						{multi: false, safe: true},
 						function (err, count)
 						{
