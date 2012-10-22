@@ -75,6 +75,9 @@ var Domus = {
 					delete req.body.action;
 					Domus.deleteWidget(req.body._id, req.body.tab, req.user.email, callback);
 					break;
+				case 'add_tab':
+					// add a tab... duh
+					break;
 				case 'move':
 					// move widget to different tab
 					break;
@@ -193,32 +196,33 @@ var Domus = {
 			}
 		},
 
-		/**
-		 * Get the edit form for a widget
-		 * @view ../views/editform.html.twig
-		 */
-		'/edit_form/:widget_id': function (req, res)
-		{
-			rest.get(Domus.config.api_server.host + '/widget/' + req.params.widget_id).on('complete', function (data)
-			{
-				return res.render('editform.html.twig', {
-					data: data
-				});
-			});
-		},
 
 		/**
-		 * Get the add form
-		 * @view ../views/addform.html.twig
+		 * Form generation endpoint
 		 */
-		'/add_form/': function (req, res)
+		'/form/:form_id': function (req, res)
 		{
-			rest.get(Domus.config.api_server.host + '/user/' + req.user.email).on('complete', function (data)
+			switch(req.params.form_id)
 			{
-				return res.render('addform.html.twig', {
-					tabs: data.tabs
+			case 'edit_widget':
+				rest.get(Domus.config.api_server.host + '/widget/' + req.query.widget).on('complete', function (data)
+				{
+					return res.render('forms/edit_widget.html.twig', {
+						data: data
+					});
 				});
-			});
+				break;
+			case 'add_widget':
+				rest.get(Domus.config.api_server.host + '/user/' + req.user.email).on('complete', function (data)
+				{
+					return res.render('forms/add_widget.html.twig', {
+						tabs: data.tabs
+					});
+				});
+				break;
+			case 'add_tab':
+				return res.render('forms/add_tab.html.twig');
+			}
 		}
 	},
 

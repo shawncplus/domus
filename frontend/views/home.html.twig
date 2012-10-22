@@ -13,7 +13,6 @@
 			<div class="alert alert-error fade in">
 				<button type="button" class="close" data-dismiss="alert">&times;</button>
 				<p>The following errors happened</p>
-
 				<ul class="unstyled">
 	{% for e in errors %}
 					<li>{{ e }}</li>
@@ -49,7 +48,11 @@
 				<li{%if index == 0%} class="active"{%endif%}><a href="#tab-{{tab._id}}" data-id="{{tab._id}}" data-toggle="tab">{{tab.title}}</a></li>
 {% set index = index + 1 %}
 {% endfor %}
-				<li><a class="btn btn-small btn-warning" id="add_tab"><i class="icon-plus-sign icon-white"></i></a></li>
+				<li>
+					<a id="add_tab" href="/form/add_tab" data-target="#addTabForm" role="button" class="btn btn-small btn-warning" data-toggle="modal">
+						<i class="icon-plus-sign icon-white"></i>
+					</a>
+				</li>
 			</ul>
 
 			<div class="tab-content">
@@ -63,15 +66,29 @@
 
 		<div id="footer" class="navbar {%if lights == 'on'%}navbar-inverse {%endif%}navbar-fixed-bottom">
 			<div class="navbar-inner">
-				<a id="add_button" href="/add_form/" data-target="#editThing" role="button" class="btn btn-success pull-left" data-toggle="modal">Add Thing</a>
+				<a id="add_button" href="/form/add_widget" data-target="#addThing" role="button" class="btn btn-success pull-left" data-toggle="modal">Add Thing</a>
 				<a href="/logout" class="btn btn-primary pull-right">Logout</a>
 			</div>
 		</div>
 
 		<div class="modal hide fade" id="editThing" tabindex="-1" role="dialog" aria-labelledby="editThingLabel" aria-hidden="true">
+			<div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+				<h3 id="editThingLabel">Update thing</h3>
+			</div>
+			<div class="modal-body"></div>
+		</div>
+
+		<div class="modal hide fade" id="addThing" tabindex="-1" role="dialog" aria-labelledby="addThingLabel" aria-hidden="true">
+			<div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+				<h3 id="addThingLabel">Add thing</h3>
+			</div>
+			<div class="modal-body"></div>
+		</div>
+
+		<div class="modal hide fade" id="addTabForm" tabindex="-1" role="dialog" aria-labelledby="editTabLabel" aria-hidden="true">
 			<div class="modal-header">
 				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
-				<h3 id="editThingLabel">Add/Update thing</h3>
+				<h3 id="editTabLabel">Add tab</h3>
 			</div>
 			<div class="modal-body"></div>
 		</div>

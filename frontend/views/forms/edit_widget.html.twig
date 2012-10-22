@@ -1,17 +1,17 @@
 <form class="form-horizontal" method="post" id="editform">
 	<input type="hidden" name="action" value="edit">
-	<input type="hidden" id="input-_id" name="_id" value="{{data._id}}">
+	<input type="hidden" name="_id" value="{{data._id}}">
 	<div class="control-group">
 		<label class="control-label" for="input-title">Title</label>
 		<div class="controls">
-			<input id="input-title" name="title" type="text" value="{{data.title}}">
+			<input id="input-title-edit" name="title" type="text" value="{{data.title}}">
 		</div>
 	</div>
 
 	<div class="control-group">
 		<label class="control-label" for="input-source">Source</label>
 		<div class="controls">
-			<input id="input-source" name="source" type="text" value="{{data.source}}">
+			<input name="source" type="text" value="{{data.source}}">
 		</div>
 	</div>
 
@@ -20,7 +20,7 @@
 		<div class="controls">
 			<div class="input-prepend">
 				<span class="add-on range-preview"></span>
-				<input id="input-count" name="count" type="range" min="1" max="5" data-default="3" value="{{data.count}}">
+				<input name="count" type="range" min="1" max="5" data-default="3" value="{{data.count}}">
 			</div>
 		</div>
 	</div>
@@ -30,7 +30,7 @@
 		<div class="controls">
 			<div class="input-prepend input-append">
 				<span class="add-on range-preview"></span>
-				<input id="input-refresh_interval" name="refresh_interval" type="range" value="{{data.refresh_interval}}" step="5" min="5" max="60">
+				<input name="refresh_interval" type="range" value="{{data.refresh_interval}}" step="5" min="5" max="60">
 				<span class="add-on">minutes</span>
 			</div>
 		</div>

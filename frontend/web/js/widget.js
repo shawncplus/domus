@@ -71,11 +71,16 @@ $(function () {
 	// lazyload other tabs
 	$('#tablist a').click(function ()
 	{
+		// Skip the add button
+		if ($(this).hasClass('btn')) {
+			return;
+		}
+
 		var tab = $($(this).attr('href'));
 		if (!tab.data('loaded'))
 			tab.load('/tab/' + tab.data('id'), function (response)
 			{
-				$('#' + tab.attr('id') + ' .widget').each(function (index, widget)
+				tab.find('.widget').each(function (index, widget)
 				{
 					var widget_id = $(widget).data('id');
 					var $body = $(widget).find('.widget-body');
@@ -111,12 +116,24 @@ $(function () {
 		$(this).prev('span.range-preview').html(this.valueAsNumber);
 	};
 
+	// Focus inputs and such on the form popups
+	$('#addThing').live('shown', function ()
+	{
+		$('input[type=range]').each(updateRangePreview).live('change', updateRangePreview);
+		$('#input-title-add').focus();
+		$('#input-tab').val($('div.tab-pane.active').data('id'));
+	});
+
 	$('#editThing').live('shown', function ()
 	{
 		$('input[type=range]').each(updateRangePreview).live('change', updateRangePreview);
-		$('#input-title').focus();
-		$('#input-tab').val($('div.tab-pane.active').data('id'));
-	})
+		$('#input-title-edit').focus();
+	});
+
+	$('#addTabForm').live('shown', function ()
+	{
+		$('#input-title-tab').focus();
+	});
 
 	$('.alert').alert();
 
