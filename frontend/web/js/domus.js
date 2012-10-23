@@ -55,20 +55,12 @@ var Domus = {
 			$.each(data, function (i, val)
 			{
 				var currenthash = Domus.util.parseHash(window.location.hash);
-				if (!(i in currenthash)) {
+				if (!(i in currenthash) || val !== null) {
 					currenthash[i] = val;
-					window.history.replaceState({}, document.title, window.location.href.replace(window.location.hash, '') + Domus.util.compileHash(currenthash));
 				} else {
-					var currenthash = Domus.util.parseHash(window.location.hash);
-
-					if (val === null) {
-						delete currenthash[i];
-					} else {
-						currenthash[i] = val;
-					}
-
-					window.history.replaceState({}, document.title, window.location.href.replace(window.location.hash, '') + Domus.util.compileHash(currenthash));
+					delete currenthash[i];
 				}
+				window.history.replaceState({}, document.title, window.location.href.replace(window.location.hash, '') + Domus.util.compileHash(currenthash));
 			});
 		}
 	}
