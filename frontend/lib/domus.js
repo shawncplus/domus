@@ -1,7 +1,9 @@
 var   rest = require('restler')
 	, passport = require('passport')
 	, LocalStrategy = require('passport-local').Strategy
-	, util = require('util');
+	, util = require('util')
+	, Widget = require('./model/widget.js').Widget
+	, Tab = require('./model/tab.js').Tab;
 
 passport.requireAuth = function (req, res, next)
 {
@@ -64,17 +66,21 @@ var Domus = {
 				switch(params.action) {
 				case 'add':
 					delete req.body.action;
-					Domus.addWidget(req.body, req.user.email, callback);
-					req.session.messages.addform = req.body;
-					break;
-				case 'edit':
-					delete req.body.action;
-					Domus.updateWidget(req.body, callback);
+					Widget.add(req.body, req.user.email, callback);
 					req.session.messages.addform = req.body;
 					break;
 				case 'delete':
 					delete req.body.action;
-					Domus.deleteWidget(req.body._id, req.body.tab, req.user.email, callback);
+					Widget.delete(req.body._id, req.body.tab, req.user.email, callback);
+					break;
+				case 'edit':
+					delete req.body.action;
+					Widget.update(req.body, callback);
+					req.session.messages.addform = req.body;
+					break;
+				case 'move':
+					// move widget to different tab
+					Widget.move(req.body.source_tab, req.body.target_tab, req.body.widget, callback);
 					break;
 				case 'add_tab':
 					delete req.body.action;
@@ -90,35 +96,11 @@ var Domus = {
 						Domus.deleteTab(req.body._id, req.user.email, callback);
 					});
 					break;
-				case 'move':
-					// move widget to different tab
-					Domus.moveWidget(req.body.source_tab, req.body.target_tab, req.body.widget, callback);
-					break;
 				default:
 					res.json({ error: "WTF?", request: params });
 					break;
 				}
 			}]
-		},
-
-		/**
-		 * Render a tab
-		 * @view ../views/tab.html.twig
-		 */
-		'/tab/:tab_id': {
-			get: function (req, res)
-			{
-				rest.get(Domus.config.api_server.host + '/tab/' + req.params.tab_id).on('complete', function (data)
-				{
-					if (data.error) {
-						return res.render('widget.error.html.twig', {
-							error: data.error
-						});
-					}
-
-					res.render('tab.html.twig', data);
-				});
-			}
 		},
 
 		/**
@@ -154,6 +136,26 @@ var Domus = {
 			{
 				req.logOut();
 				res.redirect('/');
+			}
+		},
+
+		/**
+		 * Render a tab
+		 * @view ../views/tab.html.twig
+		 */
+		'/tab/:tab_id': {
+			get: function (req, res)
+			{
+				rest.get(Domus.config.api_server.host + '/tab/' + req.params.tab_id).on('complete', function (data)
+				{
+					if (data.error) {
+						return res.render('widget.error.html.twig', {
+							error: data.error
+						});
+					}
+
+					res.render('tab.html.twig', data);
+				});
 			}
 		},
 
@@ -289,120 +291,6 @@ var Domus = {
 	},
 
 	/**
-	 * Create a widget and add it to the user
-	 * @param {object} widget
-	 * @param {string} user The user id, probably email
-	 * @param {function} callback
-	 */
-	addWidget: function (widget, user, callback)
-	{
-		var errors = Domus._validateWidget(widget);
-
-		if (errors.length) {
-			return callback({ errors: errors });
-		}
-
-		var tab = widget.tab;
-		delete widget.tab;
-
-		widget.position = {};
-		rest.postJson(Domus.config.api_server.host + '/widget/', widget).on('complete', function (data)
-		{
-			if (data.error) {
-				return callback({
-					errors: [ data.error ]
-				});
-			}
-
-			var widget = data[0];
-			rest.put(Domus.config.api_server.host + '/tab/' + tab + '/widget/' + widget._id).on('complete', function (data)
-			{
-				if (data.error) {
-					return callback({
-						errors: [ data.error ]
-					});
-				}
-
-				return callback();
-			});
-		});
-	},
-
-	/**
-	 * Update a widget
-	 * @param {object} widget
-	 * @param {function} callback
-	 */
-	updateWidget: function (widget, callback)
-	{
-		var errors = Domus._validateWidget(widget);
-
-		if (!widget._id) {
-			errors.push("Wat? You tried to update when you wanted to create.");
-		}
-
-		if (errors.length) {
-			return callback({ errors: errors });
-		}
-
-		rest.json(Domus.config.api_server.host + '/widget/' + widget._id, widget, {}, 'PUT').on('complete', function (data)
-		{
-			if (data.error) {
-				return callback({
-					errors: [ data.error ]
-				});
-			}
-
-			return callback();
-		});
-	},
-
-	/**
-	 * Delete a widget and the user association with it
-	 * @param {string} widget_id
-	 * @param {string} tab_id
-	 * @param {string} user
-	 * @param {function} callback
-	 */
-	deleteWidget: function (widget_id, tab_id, user, callback)
-	{
-		rest.del(Domus.config.api_server.host + '/tab/' + tab_id + '/widget/' + widget_id).on('complete', function (data, response)
-		{
-			if (data.error) {
-				return callback({
-					errors: [ data.error ]
-				});
-			}
-
-			return callback();
-		});
-	},
-
-	/**
-	 * Move a widget between tabs
-	 * @param {string} source_tab
-	 * @param {string} target_tab
-	 * @param {string} widget
-	 * @param {function} callback
-	 */
-	moveWidget: function (source_tab, target_tab, widget, callback)
-	{
-		rest.postJson(Domus.config.api_server.host + '/widget/' + widget + '/move/', {
-			source: source_tab,
-			target: target_tab
-		}).on('complete', function (data)
-		{
-			if (data.error) {
-				return callback({
-					errors: [ data.error ]
-				});
-			}
-
-			return callback();
-		});
-	},
-
-	/**
 	 * Create a tab and add it to the user
 	 * @param {object} tab
 	 * @param {string} user The user id, probably email
@@ -461,35 +349,6 @@ var Domus = {
 
 			return callback();
 		});
-	},
-
-	/**
-	 * Helper for making sure widget form data is valid
-	 * @param {object} widget
-	 * @return {array}
-	 */
-	_validateWidget: function (widget)
-	{
-		var errors = [];
-		if (!widget.title.trim().length) {
-			errors.push("You didn't give the thing a title");
-		}
-
-		if (!widget.source.trim().length) {
-			errors.push("No source, where do you expect to get the data?");
-		}
-
-		widget.count = parseInt(widget.count, 10);
-		if (widget.count < 1 || widget.count > 5) {
-			errors.push("Only 1-5 news items per thing, bud");
-		}
-
-		widget.refresh_interval = parseInt(widget.refresh_interval, 10);
-		if (widget.refresh_interval < 5 || widget.refresh_interval > 60) {
-			errors.push("Refresh interval has to be between 5 and 60 minutes");
-		}
-
-		return errors;
 	},
 
 	/**
