@@ -49,6 +49,28 @@ $(function () {
 				});
 			}
 		});
+
+		// Change the form action for the edit window based on the button that launched it
+		tab.find('a[data-action]').on('click', function ()
+		{
+			var action = $(this).data('action');
+			switch (action) {
+			case 'delete':
+				$('#delete_id').val($(this).data('target'));
+				$('#delete_widget_tab_id').val($('div.tab-pane.active').data('id'));
+				$('#delete_form').submit();
+				break;
+			case 'delete-tab':
+				var answer = confirm("Are you sure you want to delete this tab? It'll delete the widgets along with it, move them to another tab if you want to save them.");
+
+				if (answer) {
+					var tab = $('div.tab-pane.active').data('id');
+					$('#delete_tab_id').val(tab);
+					$('#delete_tab_form').submit();
+				}
+				break;
+			}
+		});
 	};
 
 	// Load first tab
@@ -101,28 +123,6 @@ $(function () {
 	{
 		$body = $($(this).data('parent')).find('div.accordion-heading').removeClass('accordion-toggle-active');
 		$(this).parent().addClass('accordion-toggle-active');
-	});
-
-	// Change the form action for the edit window based on the button that launched it
-	$('a[data-action]').on('click', function ()
-	{
-		var action = $(this).data('action');
-		switch (action) {
-		case 'delete':
-			$('#delete_id').val($(this).data('target'));
-			$('#delete_widget_tab_id').val($('div.tab-pane.active').data('id'));
-			$('#delete_form').submit();
-			break;
-		case 'delete-tab':
-			var answer = confirm("Are you sure you want to delete this tab? It'll delete the widgets along with it, move them to another tab if you want to save them.");
-
-			if (answer) {
-				var tab = $('div.tab-pane.active').data('id');
-				$('#delete_tab_id').val(tab);
-				$('#delete_tab_form').submit();
-			}
-			break;
-		}
 	});
 
 	// Setup the fields so the user can see the actual value of a range input
