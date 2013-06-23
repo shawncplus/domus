@@ -19,6 +19,38 @@ $(function () {
 		$('#loadingmodal').modal('hide');
 	};
 
+	var setupDrag = function (tab)
+	{
+		tab.find('.widget').draggable({
+			handle: 'ul.nav li.active',
+			cursor: 'move',
+			opacity: 0.35,
+			stack: '.widget',
+			containment: 'parent',
+			start: function (e, ui)
+			{
+			},
+			stop: function (e, ui)
+			{
+				var widget_id = ui.helper.data('id');
+				showLoader('Saving position', 'Saving widget position...');
+				$.ajax({
+					type: 'PUT',
+					url: 'widget/' + widget_id,
+					data: JSON.stringify({
+						position: ui.helper.position()
+					}),
+					contentType: 'application/json',
+					dataType: 'json',
+					processData: false
+				}).done(function (response)
+				{
+					hideLoader();
+				});
+			}
+		});
+	};
+
 	// Load first tab
 	$('div.tab-pane.active').load('/tab/' + $('div.tab-pane.active').data('id'), function (response)
 	{
@@ -27,6 +59,8 @@ $(function () {
 			var widget_id = $(widget).data('id');
 			var $body = $(widget).find('.widget-body');
 			$body.load('/widget/' + widget_id);
+
+			setupDrag($('div.tab-pane.active'));
 		});
 		$('div.tab-pane.active').data('loaded', 1);
 	});
@@ -53,36 +87,10 @@ $(function () {
 					var widget_id = $(widget).data('id');
 					var $body = $(widget).find('.widget-body');
 					$body.load('/widget/' + widget_id);
+
+					setupDrag(tab);
 				});
 
-				tab.find('.widget').draggable({
-					handle: 'ul.nav li.active',
-					cursor: 'move',
-					opacity: 0.35,
-					stack: '.widget',
-					containment: 'parent',
-					start: function (e, ui)
-					{
-					},
-					stop: function (e, ui)
-					{
-						var widget_id = ui.helper.data('id');
-						showLoader('Saving position', 'Saving widget position...');
-						$.ajax({
-							type: 'PUT',
-							url: 'widget/' + widget_id,
-							data: JSON.stringify({
-								position: ui.helper.position()
-							}),
-							contentType: 'application/json',
-							dataType: 'json',
-							processData: false
-						}).done(function (response)
-						{
-							hideLoader();
-						});
-					}
-				});
 
 				tab.data('loaded', 1);
 			});
