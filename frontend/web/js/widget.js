@@ -1,15 +1,4 @@
 $(function () {
-	// draggable using live events
-	(function ($) {
-		$.fn.liveDraggable = function (opts) {
-			this.live("mouseover", function() {
-				if (!$(this).data("init")) {
-					$(this).data("init", true).draggable(opts);
-				}
-			});
-			return $();
-		};
-	}(jQuery));
 
 	// Fit the body to the window
 	var fit = function () {
@@ -29,32 +18,6 @@ $(function () {
 	var hideLoader = function () {
 		$('#loadingmodal').modal('hide');
 	};
-
-	$('.widget').liveDraggable({
-		handle: 'ul.nav li.active',
-		cursor: 'move',
-		opacity: 0.35,
-		stack: '.widget',
-		containment: 'parent',
-		stop: function (e, ui)
-		{
-			var widget_id = ui.helper.data('id');
-			showLoader('Saving position', 'Saving widget position...');
-			$.ajax({
-				type: 'PUT',
-				url: 'widget/' + widget_id,
-				data: JSON.stringify({
-					position: ui.helper.position()
-				}),
-				contentType: 'application/json',
-				dataType: 'json',
-				processData: false
-			}).done(function (response)
-			{
-				hideLoader();
-			});
-		}
-	});
 
 	// Load first tab
 	$('div.tab-pane.active').load('/tab/' + $('div.tab-pane.active').data('id'), function (response)
@@ -92,19 +55,48 @@ $(function () {
 					$body.load('/widget/' + widget_id);
 				});
 
+				tab.find('.widget').draggable({
+					handle: 'ul.nav li.active',
+					cursor: 'move',
+					opacity: 0.35,
+					stack: '.widget',
+					containment: 'parent',
+					start: function (e, ui)
+					{
+					},
+					stop: function (e, ui)
+					{
+						var widget_id = ui.helper.data('id');
+						showLoader('Saving position', 'Saving widget position...');
+						$.ajax({
+							type: 'PUT',
+							url: 'widget/' + widget_id,
+							data: JSON.stringify({
+								position: ui.helper.position()
+							}),
+							contentType: 'application/json',
+							dataType: 'json',
+							processData: false
+						}).done(function (response)
+						{
+							hideLoader();
+						});
+					}
+				});
+
 				tab.data('loaded', 1);
 			});
 	});
 
 	// Add/remove the active classes because this isn't built into the accordion bootstrap stuff
-	$('a.accordion-toggle').live('click', function ()
+	$('a.accordion-toggle').on('click', function ()
 	{
 		$body = $($(this).data('parent')).find('div.accordion-heading').removeClass('accordion-toggle-active');
 		$(this).parent().addClass('accordion-toggle-active');
 	});
 
 	// Change the form action for the edit window based on the button that launched it
-	$('a[data-action]').live('click', function ()
+	$('a[data-action]').on('click', function ()
 	{
 		var action = $(this).data('action');
 		switch (action) {
@@ -132,25 +124,25 @@ $(function () {
 	};
 
 	// Focus inputs and such on the form popups
-	$('#addThing').live('shown', function ()
+	$('#addThing').on('shown', function ()
 	{
-		$('input[type=range]').each(updateRangePreview).live('change', updateRangePreview);
+		$('input[type=range]').each(updateRangePreview).on('change', updateRangePreview);
 		$('#input-title-add').focus();
 		$('#input-tab').val($('div.tab-pane.active').data('id'));
 	});
 
-	$('#editThing').live('shown', function ()
+	$('#editThing').on('shown', function ()
 	{
-		$('input[type=range]').each(updateRangePreview).live('change', updateRangePreview);
+		$('input[type=range]').each(updateRangePreview).on('change', updateRangePreview);
 		$('#input-title-edit').focus();
 	});
 
-	$('#addTabForm').live('shown', function ()
+	$('#addTabForm').on('shown', function ()
 	{
 		$('#input-title-tab').focus();
 	});
 
-	$('#moveForm').live('shown', function ()
+	$('#moveForm').on('shown', function ()
 	{
 		$('#move_source_tab').val($('div.tab-pane.active').data('id'));
 	});

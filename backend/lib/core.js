@@ -58,10 +58,22 @@ var Domus = {
 			{
 				if (!req.params.user) return res.json(400, { error: "What ain't no user where I'm from!" });
 
-				Domus._db.users.findOne({email: req.params.user}, function (err, user)
+				Domus._db.users.findOne({email: req.params.user}, function (user_err, user)
 				{
-					Domus._db.tabs.find({ _id : { $in : user.tabs }}, function (err, tabs)
+					if (!user)
 					{
+						res.json(404, { error: "User not found: " + req.params.user });
+						return;
+					}
+
+					Domus._db.tabs.find({ _id : { $in : user.tabs }}, function (tab_err, tabs)
+					{
+						if (tab_err)
+						{
+							res.json(500, { error: tab_err });
+							return;
+						}
+
 						res.json({
 							email: user.email,
 							tabs: tabs
