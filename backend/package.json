@@ -1,7 +1,7 @@
 {
   "name": "domus-be",
   "description": "Open source iGoogle replacement - API",
-  "version": "0.0.1-18",
+  "version": "0.0.1-19",
   "private": true,
   "dependencies": {
     "request": "2.25.x",
@@ -9,7 +9,7 @@
     "feedparser": "0.16.x",
     "mongojs": "0.4.x",
     "bcrypt": "0.7.x",
-	"readable-stream": "1.0.x"
+    "readable-stream": "1.0.x"
   },
   "subdomain": "shawncplus.domus-be",
   "scripts": {

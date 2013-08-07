@@ -1,3 +1,7 @@
+body {
+	font-size: 13px;
+}
+
 body.lights-off {
 	background-image: url(/static/img/noisy_net.png);
 }
@@ -6,7 +10,8 @@ body.lights-off {
 	width: 600px;
 }
 
-.navbar-fixed-top .navbar-inner {
+div.navbar div.navbar-inner, #footer .navbar-inner {
+	padding: 0 5px;
 }
 
 .navbar button.btn-small {
@@ -50,6 +55,7 @@ body.lights-off {
 
 #tab-container .widget-header {
 	margin-bottom: 0;
+	height: 30px;
 }
 
 #tab-container .widget-body {
@@ -63,17 +69,23 @@ div.widget > ul.nav-tabs, div.widget .nav-tabs > li > a {
 	border-radius: 0;
 }
 
+div.widget .nav-tabs > li > a {
+	padding: 5px 10px;
+}
+
 div.widget.ui-draggable > ul.widget-header > li.active > h4:hover {
 	cursor: move;
 }
 
 div.widget .nav-tabs > .active > h4, div.nav-tabs > .active > h4:hover {
+	font-size: 13px;
 	color: #fff;
 	border: none;
 	background-color: transparent;
 	max-width: 300px;
-	padding: 0 5px;
-	line-height: 90%;
+	padding: 5px 10px;
+	line-height: inherit;
+	margin: 0 5px;
 }
 
 div.widget-body .nav-tabs > li, .nav-tabs > li {
@@ -131,6 +143,11 @@ div.widget-body div.accordion-heading {
 	border-width: 1px 1px 0 1px;
 	border-style: solid;
 	border-color: #e5e5e5;
+}
+
+div.widget-body div.accordion-heading a {
+	padding: 7px 15px 5px;
+	line-height: 100%;
 }
 
 div.widget-body div.accordion-body {
