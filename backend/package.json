@@ -4,10 +4,12 @@
   "version": "0.0.1-18",
   "private": true,
   "dependencies": {
+    "request": "2.25.x",
     "express": "3.x",
-    "feedparser": "0.10.x",
+    "feedparser": "0.16.x",
     "mongojs": "0.4.x",
-    "bcrypt": "0.7.x"
+    "bcrypt": "0.7.x",
+	"readable-stream": "1.0.x"
   },
   "subdomain": "shawncplus.domus-be",
   "scripts": {

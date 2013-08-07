@@ -1,4 +1,5 @@
 var http = require('http')
+	, request = require('request')
     , fs = require('fs')
 	, FeedParser = require('feedparser')
 	, util = require('util')
@@ -499,30 +500,43 @@ var Domus = {
 			false;
 
 		if (!cached || stale) {
-			var fparser = new FeedParser()
-			fparser.parseUrl(widget.source, function (err, meta, articles)
-			{
-				if (err) return callback({
-					error: err
-				});
-				var articles = articles.slice(0, widget.count);
-				var items = [];
-
-				for (var i in articles) {
-					var article = articles[i];
-
-					items.push({
-						title: article.title,
-						preview: article.description.substr(0, Math.min(article.description.length, 200)) + '...',
-						link: article.link || article.guid
+			var items = [], count = widget.count;
+			request(widget.source)
+				.on('error', function (err)
+				{
+					callback({
+						error: err
 					});
-				}
+				})
+				.pipe(new FeedParser())
+				.on('meta', function () {})
+				.on('readable', function ()
+				{
+					var stream = this, article = null;
 
-				if (!fs.existsSync(widget_dir)) fs.mkdirSync(widget_dir);
-				fs.writeFileSync(widget_file, JSON.stringify(items), 'utf8');
+					while (article = stream.read()) {
+						if (count-- <= 0) {
+							break;
+						}
+						items.push({
+							title: article.title,
+							preview: article.description.substr(0, Math.min(article.description.length, 200)) + '...',
+							link: article.link || article.guid
+						});
+					}
 
-				return callback(items);
-			});
+					if (!fs.existsSync(widget_dir)) fs.mkdirSync(widget_dir);
+					fs.writeFileSync(widget_file, JSON.stringify(items), 'utf8');
+
+					callback(items);
+				})
+				.on('error', function (err)
+				{
+					console.log(err);
+					callback({
+						error: err
+					});
+				});
 		} else {
 			return callback(JSON.parse(fs.readFileSync(widget_file, 'utf8')));
 		}
