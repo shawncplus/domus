@@ -45,6 +45,30 @@ var Domus = {
 				});
 			}],
 
+			'delete': [ passport.requireAuth, function (req, res)
+			{
+				var params = req.body;
+				var callback = function (response)
+				{
+					res.json(response || { success: true });
+				};
+
+				switch(params.action) {
+				case 'tab':
+					rest.get(Domus.config.api_server.host + '/user/' + req.user.email).on('complete', function (data)
+					{
+						if (data.tabs.length === 1) {
+							return callback({errors: ["You can't delete your last tab, don't ask me why."]});
+						}
+						Domus.deleteTab(params._id, req.user.email, callback);
+					});
+					break;
+				case 'widget':
+					Domus.deleteWidget(params._id, params.tab, req.user.email, callback);
+					break;
+				}
+			}],
+
 			post: [ passport.requireAuth, function (req, res)
 			{
 				var params = req.body;
@@ -72,26 +96,11 @@ var Domus = {
 					Domus.updateWidget(req.body, callback);
 					req.session.messages.addform = req.body;
 					break;
-				case 'delete':
-					delete req.body.action;
-					Domus.deleteWidget(req.body._id, req.body.tab, req.user.email, callback);
-					break;
 				case 'add_tab':
 					delete req.body.action;
 					Domus.addTab(req.body, req.user.email, callback);
-					// add a tab... duh
-					break;
-				case 'delete_tab':
-					rest.get(Domus.config.api_server.host + '/user/' + req.user.email).on('complete', function (data)
-					{
-						if (data.tabs.length === 1) {
-							return callback({errors: ["You can't delete your last tab, don't ask me why."]});
-						}
-						Domus.deleteTab(req.body._id, req.user.email, callback);
-					});
 					break;
 				case 'move':
-					// move widget to different tab
 					Domus.moveWidget(req.body.source_tab, req.body.target_tab, req.body.widget, callback);
 					break;
 				default:

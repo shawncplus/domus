@@ -33,7 +33,10 @@ $(function () {
 			stop: function (e, ui)
 			{
 				var widget_id = ui.helper.data('id');
+				/**
+				 * I thought this was a good idea but it seems kind of intrusive... maybe I'll change my mind
 				showLoader('Saving position', 'Saving widget position...');
+				*/
 				$.ajax({
 					type: 'PUT',
 					url: 'widget/' + widget_id,
@@ -45,33 +48,76 @@ $(function () {
 					processData: false
 				}).done(function (response)
 				{
-					hideLoader();
+					//hideLoader(); see above comment
 				});
 			}
 		});
 
 		// Change the form action for the edit window based on the button that launched it
-		tab.find('a[data-action]').on('click', function ()
+		tab.find('a[data-action]').unbind('click').on('click', function (e)
 		{
 			var action = $(this).data('action');
 			switch (action) {
 			case 'delete':
-				$('#delete_id').val($(this).data('target'));
-				$('#delete_widget_tab_id').val($('div.tab-pane.active').data('id'));
-				$('#delete_form').submit();
-				break;
-			case 'delete-tab':
-				var answer = confirm("Are you sure you want to delete this tab? It'll delete the widgets along with it, move them to another tab if you want to save them.");
+				e.preventDefault();
+				e.stopPropagation();
+				var target = $(this).data('target');
+				var current_tab = $('div.tab-pane.active').data('id');
 
-				if (answer) {
-					var tab = $('div.tab-pane.active').data('id');
-					$('#delete_tab_id').val(tab);
-					$('#delete_tab_form').submit();
+				if (confirm("Just checking but, are you sure?")) {
+					showLoader('Deleting Widget', 'Yeah! I didn\'t like that widget either!');
+					$.ajax({
+						url: '/',
+						type: "DELETE",
+						data: { _id: target, action: 'widget', tab: current_tab },
+						success: function (data)
+						{
+							hideLoader();
+							if (!data.success) {
+								alert("Shit broke, check the net log for why. I trust you");
+								return;
+							}
+
+							$('#widget-' + target).remove();
+						}
+					});
 				}
 				break;
 			}
 		});
 	};
+
+	$('#remove_tab').on('click', function ()
+	{
+		var answer = confirm("Are you sure you want to delete this tab? It'll delete the widgets along with it, move them to another tab if you want to save them.");
+
+		if (answer) {
+			var tab = $('div.tab-pane.active');
+
+			if (tab) {
+				tab = tab.data('id');
+				$('#delete_tab_id').val(tab);
+				showLoader('Deleting Tab', 'So long Mr. Tab, you did well...');
+				$.ajax({
+					url: '/', 
+					type: "DELETE",
+					data: { _id: tab, action: 'tab' },
+					success: function (data)
+					{
+						hideLoader();
+						if (!data.success) {
+							alert("Shit broke, check the net log for why. I trust you");
+							return;
+						}
+
+						$('div.tab-pane.active').remove();
+						$('ul.nav-tabs li.active').remove();
+						$('ul.nav-tabs li').first().click();
+					}
+				});
+			}
+		}
+	});
 
 	// Load first tab
 	$('div.tab-pane.active').load('/tab/' + $('div.tab-pane.active').data('id'), function (response)
