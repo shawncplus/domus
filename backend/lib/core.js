@@ -395,6 +395,7 @@ var Domus = {
 							return res.json({error:items.error});
 						}
 						res.json({ 'items' : items });
+						return true;
 					});
 				});
 			}
@@ -500,7 +501,8 @@ var Domus = {
 			false;
 
 		if (!cached || stale) {
-			var items = [], count = widget.count;
+			var items = [], count = widget.count,
+			    read_done = false, callback_finished = false;
 			request(widget.source)
 				.on('error', function (err)
 				{
@@ -512,12 +514,18 @@ var Domus = {
 				.on('meta', function () {})
 				.on('readable', function ()
 				{
-					var stream = this, article = null;
+					var article = null;
 
-					while (article = stream.read()) {
+					if (callback_finished) {
+						return;
+					}
+
+					while (article = this.read()) {
 						if (count-- <= 0) {
+							read_done = true;
 							break;
 						}
+
 						items.push({
 							title: article.title,
 							preview: article.description.substr(0, Math.min(article.description.length, 200)) + '...',
@@ -528,7 +536,9 @@ var Domus = {
 					if (!fs.existsSync(widget_dir)) fs.mkdirSync(widget_dir);
 					fs.writeFileSync(widget_file, JSON.stringify(items), 'utf8');
 
-					callback(items);
+					if (read_done === true) {
+						callback_finished = callback(items);
+					}
 				})
 				.on('error', function (err)
 				{
